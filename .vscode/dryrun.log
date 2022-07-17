@@ -1,0 +1,5 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/mnt/c/Users/lmani/Documents/Code/CTFs/damn-vulnerable-defi-foundry'
+forge test --match-test testExploit --match-contract Unstoppable
+make: Leaving directory '/mnt/c/Users/lmani/Documents/Code/CTFs/damn-vulnerable-defi-foundry'
+ 

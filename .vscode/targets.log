@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sun Jul 17 10:56:40 2022
+# Make data base, printed on Sun Jul 17 11:48:34 2022
 
 # Variables
 
@@ -59,7 +59,7 @@ NVM_BIN = /home/caslu/.nvm/versions/node/v16.14.2/bin
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-VSCODE_IPC_HOOK_CLI = /mnt/wslg/runtime-dir/vscode-ipc-047b6e32-d280-4b29-84c2-2dfc1d6e32cb.sock
+VSCODE_IPC_HOOK_CLI = /mnt/wslg/runtime-dir/vscode-ipc-4b50f4af-760f-424d-9aa0-a98116920fb6.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -85,7 +85,7 @@ HOME = /home/caslu
 # environment
 LOGNAME = caslu
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # environment
 NVM_CD_FLAGS = -q
 # environment
@@ -319,6 +319,6 @@ NaiveReceiver:
 # strcache performance: lookups = 60 / hit rate = 28%
 # hash-table stats:
 # Load=43/8192=1%, Rehash=0, Collisions=1/60=2%
-# Finished Make data base on Sun Jul 17 10:56:40 2022
+# Finished Make data base on Sun Jul 17 11:48:34 2022
 
  

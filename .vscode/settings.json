@@ -1,7 +1,8 @@
 {
-    "editor.formatOnSave": true,
-    "solidity.formatter": "prettier",
-    "[solidity]": {
-        "editor.defaultFormatter": "JuanBlanco.solidity"
-    }
+  "editor.formatOnSave": true,
+  "solidity.formatter": "prettier",
+  "[solidity]": {
+    "editor.defaultFormatter": "JuanBlanco.solidity"
+  },
+  "solidity.defaultCompiler": "remote"
 }

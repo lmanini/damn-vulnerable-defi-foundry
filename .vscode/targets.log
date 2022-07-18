@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sun Jul 17 11:48:34 2022
+# Make data base, printed on Mon Jul 18 16:11:24 2022
 
 # Variables
 
@@ -29,7 +29,7 @@ NVM_INC = /home/caslu/.nvm/versions/node/v16.14.2/include/node
 # automatic
 @F = $(notdir $@)
 # makefile
-CURDIR := /mnt/c/Users/lmani/Documents/Code/CTFs/damn-vulnerable-defi-foundry
+CURDIR := /mnt/c/Users/lmani/Documents/Code/Security/CTFs/damn-vulnerable-defi-foundry
 # makefile
 SHELL = /bin/sh
 # environment
@@ -47,7 +47,7 @@ VSCODE_CWD = /mnt/c/Users/lmani/AppData/Local/Programs/Microsoft VS Code
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
-PATH = /home/caslu/.vscode-server/bin/b06ae3b2d2dbfe28bca3134cc6be65935cdfea6a/bin/remote-cli:/home/caslu/.yarn/bin:/home/caslu/.config/yarn/global/node_modules/.bin:/home/caslu/.nvm/versions/node/v16.14.2/bin:/home/caslu/.nix-profile/bin:/home/caslu/.autojump/bin:/home/caslu/bin:/usr/local/bin:/home/caslu/.yarn/bin:/home/caslu/.config/yarn/global/node_modules/.bin:/home/caslu/.nvm/versions/node/v16.14.2/bin:/home/caslu/.nix-profile/bin:/home/caslu/.autojump/bin:/home/caslu/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/ConEmu:/mnt/c/Program Files/ConEmu/ConEmu:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/nodejs/:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/Go/bin:/mnt/c/Program Files/MATLAB/R2021a/bin:/mnt/c/Program Files/Geth:/mnt/c/Program Files/Common Files/Oracle/Java/javapath:/mnt/c/Program Files/MySQL/MySQL Shell 8.0/bin/:/mnt/c/Users/lmani/AppData/Local/Microsoft/WindowsApps:/mnt/c/Program Files/JetBrains/GoLand 2021.2.1/bin:/mnt/c/Program Files/JetBrains/WebStorm 2021.2.1/bin:/mnt/c/Users/lmani/AppData/Roaming/npm:/mnt/c/Program Files/JetBrains/Rider 2021.2.1/bin:/mnt/c/Users/lmani/go/bin:/mnt/c/Program Files/JetBrains/IntelliJ IDEA 2021.2.3/bin:/mnt/c/Users/lmani/AppData/Local/Programs/Microsoft VS Code/bin:/usr/local/go/bin:/home/caslu/.local/bin:/home/caslu/.foundry/bin:/usr/local/go/bin:/home/caslu/.local/bin:/home/caslu/.foundry/bin
+PATH = /home/caslu/.vscode-server/bin/b06ae3b2d2dbfe28bca3134cc6be65935cdfea6a/bin/remote-cli:/home/caslu/.yarn/bin:/home/caslu/.config/yarn/global/node_modules/.bin:/home/caslu/.nvm/versions/node/v16.14.2/bin:/home/caslu/.autojump/bin:/home/caslu/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/ConEmu:/mnt/c/Program Files/ConEmu/ConEmu:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/nodejs/:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/Go/bin:/mnt/c/Program Files/MATLAB/R2021a/bin:/mnt/c/Program Files/Geth:/mnt/c/Program Files/Common Files/Oracle/Java/javapath:/mnt/c/Program Files/MySQL/MySQL Shell 8.0/bin/:/mnt/c/Users/lmani/AppData/Local/Microsoft/WindowsApps:/mnt/c/Program Files/JetBrains/GoLand 2021.2.1/bin:/mnt/c/Program Files/JetBrains/WebStorm 2021.2.1/bin:/mnt/c/Users/lmani/AppData/Roaming/npm:/mnt/c/Program Files/JetBrains/Rider 2021.2.1/bin:/mnt/c/Users/lmani/go/bin:/mnt/c/Program Files/JetBrains/IntelliJ IDEA 2021.2.3/bin:/mnt/c/Users/lmani/AppData/Local/Programs/Microsoft VS Code/bin:/usr/local/go/bin:/home/caslu/.local/bin:/home/caslu/.foundry/bin
 # environment
 LSCOLORS = Gxfxcxdxbxegedabagacad
 # environment
@@ -59,7 +59,7 @@ NVM_BIN = /home/caslu/.nvm/versions/node/v16.14.2/bin
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-VSCODE_IPC_HOOK_CLI = /mnt/wslg/runtime-dir/vscode-ipc-4b50f4af-760f-424d-9aa0-a98116920fb6.sock
+VSCODE_IPC_HOOK_CLI = /mnt/wslg/runtime-dir/vscode-ipc-33a783f9-c324-439e-8908-1922eecae55a.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -69,9 +69,7 @@ LS_COLORS = rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:
 # environment
 DISPLAY = :0
 # environment
-NIX_SSL_CERT_FILE = /etc/ssl/certs/ca-certificates.crt
-# environment
-PWD = /mnt/c/Users/lmani/Documents/Code/CTFs/damn-vulnerable-defi-foundry
+PWD = /mnt/c/Users/lmani/Documents/Code/Security/CTFs/damn-vulnerable-defi-foundry
 # default
 .LOADED := 
 # environment
@@ -85,7 +83,7 @@ HOME = /home/caslu
 # environment
 LOGNAME = caslu
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # environment
 NVM_CD_FLAGS = -q
 # environment
@@ -102,8 +100,6 @@ MAKE = $(MAKE_COMMAND)
 MAKECMDGOALS := all
 # environment
 SHLVL = 1
-# environment
-NIX_PROFILES = /nix/var/nix/profiles/default /home/caslu/.nix-profile
 # default
 MAKE_VERSION := 4.2.1
 # environment
@@ -173,7 +169,7 @@ TERM = xterm-256color
 # environment
 WSL_DISTRO_NAME = Ubuntu-20.04
 # variable set hash-table stats:
-# Load=80/1024=8%, Rehash=0, Collisions=4/105=4%
+# Load=78/1024=8%, Rehash=0, Collisions=4/103=4%
 
 # Pattern-specific Variable Values
 
@@ -274,7 +270,6 @@ SideEntrance:
 #  File has not been updated.
 #  recipe to execute (from 'makefile', line 11):
 	forge test --match-test testExploit --match-contract SideEntrance
- 
 	
 
 Puppet:
@@ -288,6 +283,7 @@ Unstoppable:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
+ 
 #  recipe to execute (from 'makefile', line 2):
 	forge test --match-test testExploit --match-contract Unstoppable
 
@@ -319,6 +315,6 @@ NaiveReceiver:
 # strcache performance: lookups = 60 / hit rate = 28%
 # hash-table stats:
 # Load=43/8192=1%, Rehash=0, Collisions=1/60=2%
-# Finished Make data base on Sun Jul 17 11:48:34 2022
+# Finished Make data base on Mon Jul 18 16:11:24 2022
 
  

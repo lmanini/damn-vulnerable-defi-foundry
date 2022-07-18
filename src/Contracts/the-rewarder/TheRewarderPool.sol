@@ -74,10 +74,10 @@ contract TheRewarderPool {
             _recordSnapshot();
         }
 
-        uint256 totalDeposits = accToken.totalSupplyAt(
+        uint256 totalDeposits = accToken.totalSupplyAt( //400 -> 1_000_400
             lastSnapshotIdForRewards
         );
-        uint256 amountDeposited = accToken.balanceOfAt(
+        uint256 amountDeposited = accToken.balanceOfAt( //100 for each user
             msg.sender,
             lastSnapshotIdForRewards
         );

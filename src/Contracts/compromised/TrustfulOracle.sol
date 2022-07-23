@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.12;
 
-import {AccessControlEnumerable} from "openzeppelin-contracts/access/AccessControlEnumerable.sol";
+import {AccessControlEnumerable} from
+    "openzeppelin-contracts/access/AccessControlEnumerable.sol";
 
 /**
  * @title TrustfulOracle
@@ -30,8 +31,7 @@ contract TrustfulOracle is AccessControlEnumerable {
     error ArraysWithDifferentSizes();
 
     modifier onlyTrustedSource() {
-        if (!hasRole(TRUSTED_SOURCE_ROLE, msg.sender))
-            revert NotATrustedSource();
+        if (!hasRole(TRUSTED_SOURCE_ROLE, msg.sender)) revert NotATrustedSource();
         _;
     }
 
@@ -56,11 +56,13 @@ contract TrustfulOracle is AccessControlEnumerable {
         address[] memory sources,
         string[] memory symbols,
         uint256[] memory prices
-    ) public onlyInitializer {
+    )
+        public
+        onlyInitializer
+    {
         // Only allow one (symbol, price) per source
         if (
-            !(sources.length == symbols.length &&
-                symbols.length == prices.length)
+            !(sources.length == symbols.length && symbols.length == prices.length)
         ) revert ArraysWithDifferentSizes();
 
         for (uint256 i = 0; i < sources.length; i++) {

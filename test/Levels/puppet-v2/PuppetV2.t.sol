@@ -9,7 +9,11 @@ import {WETH9} from "../../../src/Contracts/WETH9.sol";
 
 import {PuppetV2Pool} from "../../../src/Contracts/puppet-v2/PuppetV2Pool.sol";
 
-import {IUniswapV2Router02, IUniswapV2Factory, IUniswapV2Pair} from "../../../src/Contracts/puppet-v2/Interfaces.sol";
+import {
+    IUniswapV2Router02,
+    IUniswapV2Factory,
+    IUniswapV2Pair
+} from "../../../src/Contracts/puppet-v2/Interfaces.sol";
 
 contract PuppetV2 is Test {
     // Uniswap exchange will start with 100 DVT and 10 WETH in liquidity
@@ -17,12 +21,12 @@ contract PuppetV2 is Test {
     uint256 internal constant UNISWAP_INITIAL_WETH_RESERVE = 10 ether;
 
     // attacker will start with 10_000 DVT and 20 ETH
-    uint256 internal constant ATTACKER_INITIAL_TOKEN_BALANCE = 10_000e18;
+    uint256 internal constant ATTACKER_INITIAL_TOKEN_BALANCE = 10000e18;
     uint256 internal constant ATTACKER_INITIAL_ETH_BALANCE = 20 ether;
 
     // pool will start with 1_000_000 DVT
-    uint256 internal constant POOL_INITIAL_TOKEN_BALANCE = 1_000_000e18;
-    uint256 internal constant DEADLINE = 10_000_000;
+    uint256 internal constant POOL_INITIAL_TOKEN_BALANCE = 1000000e18;
+    uint256 internal constant DEADLINE = 10000000;
 
     IUniswapV2Pair internal uniswapV2Pair;
     IUniswapV2Factory internal uniswapV2Factory;
@@ -36,7 +40,9 @@ contract PuppetV2 is Test {
     address payable internal deployer;
 
     function setUp() public {
-        /** SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE */
+        /**
+         * SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE
+         */
         attacker = payable(
             address(uint160(uint256(keccak256(abi.encodePacked("attacker")))))
         );
@@ -58,8 +64,7 @@ contract PuppetV2 is Test {
         // Deploy Uniswap Factory and Router
         uniswapV2Factory = IUniswapV2Factory(
             deployCode(
-                "./src/build-uniswap/v2/UniswapV2Factory.json",
-                abi.encode(address(0))
+                "./src/build-uniswap/v2/UniswapV2Factory.json", abi.encode(address(0))
             )
         );
 
@@ -82,9 +87,8 @@ contract PuppetV2 is Test {
         );
 
         // Get a reference to the created Uniswap pair
-        uniswapV2Pair = IUniswapV2Pair(
-            uniswapV2Factory.getPair(address(dvt), address(weth))
-        );
+        uniswapV2Pair =
+            IUniswapV2Pair(uniswapV2Factory.getPair(address(dvt), address(weth)));
 
         assertGt(uniswapV2Pair.balanceOf(deployer), 0);
 
@@ -102,29 +106,32 @@ contract PuppetV2 is Test {
 
         // Ensure correct setup of pool.
         assertEq(
-            puppetV2Pool.calculateDepositOfWETHRequired(1 ether),
-            0.3 ether
+            puppetV2Pool.calculateDepositOfWETHRequired(1 ether), 0.3 ether
         );
 
         assertEq(
-            puppetV2Pool.calculateDepositOfWETHRequired(
-                POOL_INITIAL_TOKEN_BALANCE
-            ),
-            300_000 ether
+            puppetV2Pool.calculateDepositOfWETHRequired(POOL_INITIAL_TOKEN_BALANCE),
+            300000 ether
         );
 
         console.log(unicode"🧨 PREPARED TO BREAK THINGS 🧨");
     }
 
     function testExploit() public {
-        /** EXPLOIT START **/
+        /**
+         * EXPLOIT START *
+         */
 
-        /** EXPLOIT END **/
+        /**
+         * EXPLOIT END *
+         */
         validation();
     }
 
     function validation() internal {
-        /** SUCCESS CONDITIONS */
+        /**
+         * SUCCESS CONDITIONS
+         */
 
         // Attacker has taken all tokens from the pool
         assertEq(dvt.balanceOf(attacker), POOL_INITIAL_TOKEN_BALANCE);

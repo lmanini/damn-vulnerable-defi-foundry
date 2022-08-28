@@ -6,11 +6,9 @@ import {UniswapV2Library} from "./UniswapV2Library.sol";
 interface IERC20 {
     function transfer(address to, uint256 amount) external returns (bool);
 
-    function transferFrom(
-        address from,
-        address to,
-        uint256 amount
-    ) external returns (bool);
+    function transferFrom(address from, address to, uint256 amount)
+        external
+        returns (bool);
 
     function balanceOf(address account) external returns (uint256);
 }
@@ -55,13 +53,12 @@ contract PuppetV2Pool {
      *         Calculations assume that WETH and borrowed token have same amount of decimals.
      */
     function borrow(uint256 borrowAmount) external {
-        if (_token.balanceOf(address(this)) < borrowAmount)
-            revert NotEnoughTokenBalance();
+        if (_token.balanceOf(address(this)) < borrowAmount) revert
+            NotEnoughTokenBalance();
 
         // Calculate how much WETH the user must deposit
-        uint256 depositOfWETHRequired = calculateDepositOfWETHRequired(
-            borrowAmount
-        );
+        uint256 depositOfWETHRequired =
+            calculateDepositOfWETHRequired(borrowAmount);
 
         // Take the WETH
         _weth.transferFrom(msg.sender, address(this), depositOfWETHRequired);
@@ -72,11 +69,8 @@ contract PuppetV2Pool {
         if (!_token.transfer(msg.sender, borrowAmount)) revert TransferFailed();
 
         emit Borrowed(
-            msg.sender,
-            depositOfWETHRequired,
-            borrowAmount,
-            block.timestamp
-        );
+            msg.sender, depositOfWETHRequired, borrowAmount, block.timestamp
+            );
     }
 
     function calculateDepositOfWETHRequired(uint256 tokenAmount)
@@ -84,18 +78,15 @@ contract PuppetV2Pool {
         view
         returns (uint256)
     {
-        return (_getOracleQuote(tokenAmount) * 3) / 10**18;
+        return (_getOracleQuote(tokenAmount) * 3) / 10 ** 18;
     }
 
     // Fetch the price from Uniswap v2 using the official libraries
     function _getOracleQuote(uint256 amount) private view returns (uint256) {
         (uint256 reservesWETH, uint256 reservesToken) = UniswapV2Library
             .getReserves(_uniswapFactory, address(_weth), address(_token));
-        return
-            UniswapV2Library.quote(
-                amount * (10**18),
-                reservesToken,
-                reservesWETH
-            );
+        return UniswapV2Library.quote(
+            amount * (10 ** 18), reservesToken, reservesWETH
+        );
     }
 }

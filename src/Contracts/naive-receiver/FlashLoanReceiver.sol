@@ -25,8 +25,8 @@ contract FlashLoanReceiver {
 
         uint256 amountToBeRepaid = msg.value + fee;
 
-        if (address(this).balance < amountToBeRepaid)
-            revert CannotBorrowThatMuch();
+        if (address(this).balance < amountToBeRepaid) revert
+            CannotBorrowThatMuch();
 
         _executeActionDuringFlashLoan();
 

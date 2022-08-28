@@ -2,7 +2,8 @@
 pragma solidity 0.8.12;
 
 import {IERC20} from "openzeppelin-contracts/token/ERC20/IERC20.sol";
-import {ReentrancyGuard} from "openzeppelin-contracts/security/ReentrancyGuard.sol";
+import {ReentrancyGuard} from
+    "openzeppelin-contracts/security/ReentrancyGuard.sol";
 
 /**
  * @title DamnValuableToken
@@ -43,8 +44,7 @@ contract UnstoppableLender is ReentrancyGuard {
         damnValuableToken.transfer(msg.sender, borrowAmount);
 
         IReceiver(msg.sender).receiveTokens(
-            address(damnValuableToken),
-            borrowAmount
+            address(damnValuableToken), borrowAmount
         );
 
         uint256 balanceAfter = damnValuableToken.balanceOf(address(this));

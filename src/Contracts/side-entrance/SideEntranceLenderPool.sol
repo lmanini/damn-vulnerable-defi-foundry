@@ -35,7 +35,7 @@ contract SideEntranceLenderPool {
 
         IFlashLoanEtherReceiver(msg.sender).execute{value: amount}();
 
-        if (address(this).balance < balanceBefore)
-            revert FlashLoanHasNotBeenPaidBack();
+        if (address(this).balance < balanceBefore) revert
+            FlashLoanHasNotBeenPaidBack();
     }
 }

@@ -44,8 +44,7 @@ contract WalletRegistry is IProxyCreationCallback, Ownable {
         address[] memory initialBeneficiaries
     ) {
         if (masterCopyAddress == address(0)) revert AddressZeroIsNotAllowed();
-        if (walletFactoryAddress == address(0))
-            revert AddressZeroIsNotAllowed();
+        if (walletFactoryAddress == address(0)) revert AddressZeroIsNotAllowed();
 
         masterCopy = masterCopyAddress;
         walletFactory = walletFactoryAddress;
@@ -73,10 +72,13 @@ contract WalletRegistry is IProxyCreationCallback, Ownable {
         address singleton,
         bytes calldata initializer,
         uint256
-    ) external override {
+    )
+        external
+        override
+    {
         // Make sure we have enough DVT to pay
-        if (token.balanceOf(address(this)) < TOKEN_PAYMENT)
-            revert NotEnoughFundsToPay();
+        if (token.balanceOf(address(this)) < TOKEN_PAYMENT) revert
+            NotEnoughFundsToPay();
 
         address payable walletAddress = payable(proxy);
 
@@ -85,21 +87,21 @@ contract WalletRegistry is IProxyCreationCallback, Ownable {
         if (singleton != masterCopy) revert FakeMasterCopyUsed();
 
         // Ensure initial calldata was a call to `GnosisSafe::setup`
-        if (bytes4(initializer[:4]) != GnosisSafe.setup.selector)
-            revert WrongInitialization();
+        if (bytes4(initializer[:4]) != GnosisSafe.setup.selector) revert
+            WrongInitialization();
 
         // Ensure wallet initialization is the expected
-        if (GnosisSafe(walletAddress).getThreshold() != MAX_THRESHOLD)
-            revert InvalidThreshold();
+        if (GnosisSafe(walletAddress).getThreshold() != MAX_THRESHOLD) revert
+            InvalidThreshold();
 
-        if (GnosisSafe(walletAddress).getOwners().length != MAX_OWNERS)
-            revert InvalidNumberOfOwners();
+        if (GnosisSafe(walletAddress).getOwners().length != MAX_OWNERS) revert
+            InvalidNumberOfOwners();
 
         // Ensure the owner is a registered beneficiary
         address walletOwner = GnosisSafe(walletAddress).getOwners()[0];
 
-        if (!beneficiaries[walletOwner])
-            revert OwnerIsNotRegisteredAsBeneficiary();
+        if (!beneficiaries[walletOwner]) revert
+            OwnerIsNotRegisteredAsBeneficiary();
 
         // Remove owner as beneficiary
         _removeBeneficiary(walletOwner);

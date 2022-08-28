@@ -6,11 +6,12 @@ import "openzeppelin-contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import "forge-std/Test.sol";
 
 import {DamnValuableToken} from "../../../src/Contracts/DamnValuableToken.sol";
-import {ClimberTimelock} from "../../../src/Contracts/climber/ClimberTimelock.sol";
+import {ClimberTimelock} from
+    "../../../src/Contracts/climber/ClimberTimelock.sol";
 import {ClimberVault} from "../../../src/Contracts/climber/ClimberVault.sol";
 
 contract Climber is Test {
-    uint256 internal constant VAULT_TOKEN_BALANCE = 10_000_000e18;
+    uint256 internal constant VAULT_TOKEN_BALANCE = 10000000e18;
 
     Utilities internal utils;
     DamnValuableToken internal dvt;
@@ -24,7 +25,9 @@ contract Climber is Test {
     address payable internal attacker;
 
     function setUp() public {
-        /** SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE */
+        /**
+         * SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE
+         */
 
         utils = new Utilities();
         users = utils.createUsers(3);
@@ -45,25 +48,17 @@ contract Climber is Test {
         vm.label(address(climberImplementation), "climber Implementation");
 
         bytes memory data = abi.encodeWithSignature(
-            "initialize(address,address,address)",
-            deployer,
-            proposer,
-            sweeper
+            "initialize(address,address,address)", deployer, proposer, sweeper
         );
         climberVaultProxy = new ERC1967Proxy(
             address(climberImplementation),
             data
         );
 
-        assertEq(
-            ClimberVault(address(climberVaultProxy)).getSweeper(),
-            sweeper
-        );
+        assertEq(ClimberVault(address(climberVaultProxy)).getSweeper(), sweeper);
 
         assertGt(
-            ClimberVault(address(climberVaultProxy))
-                .getLastWithdrawalTimestamp(),
-            0
+            ClimberVault(address(climberVaultProxy)).getLastWithdrawalTimestamp(), 0
         );
 
         climberTimelock = ClimberTimelock(
@@ -87,14 +82,20 @@ contract Climber is Test {
     }
 
     function testExploit() public {
-        /** EXPLOIT START **/
+        /**
+         * EXPLOIT START *
+         */
 
-        /** EXPLOIT END **/
+        /**
+         * EXPLOIT END *
+         */
         validation();
     }
 
     function validation() internal {
-        /** SUCCESS CONDITIONS */
+        /**
+         * SUCCESS CONDITIONS
+         */
         assertEq(dvt.balanceOf(attacker), VAULT_TOKEN_BALANCE);
         assertEq(dvt.balanceOf(address(climberVaultProxy)), 0);
     }

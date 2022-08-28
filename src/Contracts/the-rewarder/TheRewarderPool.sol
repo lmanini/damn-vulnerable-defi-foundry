@@ -53,18 +53,14 @@ contract TheRewarderPool {
         distributeRewards();
 
         if (
-            !liquidityToken.transferFrom(
-                msg.sender,
-                address(this),
-                amountToDeposit
-            )
+            !liquidityToken.transferFrom(msg.sender, address(this), amountToDeposit)
         ) revert TransferFail();
     }
 
     function withdraw(uint256 amountToWithdraw) external {
         accToken.burn(msg.sender, amountToWithdraw);
-        if (!liquidityToken.transfer(msg.sender, amountToWithdraw))
-            revert TransferFail();
+        if (!liquidityToken.transfer(msg.sender, amountToWithdraw)) revert
+            TransferFail();
     }
 
     function distributeRewards() public returns (uint256) {
@@ -83,7 +79,7 @@ contract TheRewarderPool {
         );
 
         if (amountDeposited > 0 && totalDeposits > 0) {
-            rewards = (amountDeposited * 100 * 10**18) / totalDeposits;
+            rewards = (amountDeposited * 100 * 10 ** 18) / totalDeposits;
 
             if (rewards > 0 && !_hasRetrievedReward(msg.sender)) {
                 rewardToken.mint(msg.sender, rewards);
@@ -101,15 +97,18 @@ contract TheRewarderPool {
     }
 
     function _hasRetrievedReward(address account) private view returns (bool) {
-        return (lastRewardTimestamps[account] >=
-            lastRecordedSnapshotTimestamp &&
-            lastRewardTimestamps[account] <=
-            lastRecordedSnapshotTimestamp + REWARDS_ROUND_MIN_DURATION);
+        return (
+            lastRewardTimestamps[account]
+                >= lastRecordedSnapshotTimestamp
+                && lastRewardTimestamps[account]
+                <= lastRecordedSnapshotTimestamp
+                + REWARDS_ROUND_MIN_DURATION
+        );
     }
 
     function isNewRewardsRound() public view returns (bool) {
-        return
-            block.timestamp >=
-            lastRecordedSnapshotTimestamp + REWARDS_ROUND_MIN_DURATION;
+        return block.timestamp
+            >= lastRecordedSnapshotTimestamp
+            + REWARDS_ROUND_MIN_DURATION;
     }
 }

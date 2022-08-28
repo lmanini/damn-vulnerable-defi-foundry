@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.12;
 
-import {ReentrancyGuard} from "openzeppelin-contracts/security/ReentrancyGuard.sol";
+import {ReentrancyGuard} from
+    "openzeppelin-contracts/security/ReentrancyGuard.sol";
 import {Address} from "openzeppelin-contracts/utils/Address.sol";
 
 /**
@@ -35,8 +36,8 @@ contract NaiveReceiverLenderPool is ReentrancyGuard {
             borrowAmount
         );
 
-        if (address(this).balance < balanceBefore + FIXED_FEE)
-            revert FlashLoanHasNotBeenPaidBack();
+        if (address(this).balance < balanceBefore + FIXED_FEE) revert
+            FlashLoanHasNotBeenPaidBack();
     }
 
     // Allow deposits of ETH

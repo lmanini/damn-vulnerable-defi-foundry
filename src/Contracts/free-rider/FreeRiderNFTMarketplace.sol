@@ -2,7 +2,8 @@
 pragma solidity 0.8.12;
 
 import {Address} from "openzeppelin-contracts/utils/Address.sol";
-import {ReentrancyGuard} from "openzeppelin-contracts/security/ReentrancyGuard.sol";
+import {ReentrancyGuard} from
+    "openzeppelin-contracts/security/ReentrancyGuard.sol";
 import {DamnValuableNFT} from "../DamnValuableNFT.sol";
 
 /**
@@ -49,8 +50,9 @@ contract FreeRiderNFTMarketplace is ReentrancyGuard {
         );
 
         require(
-            token.getApproved(tokenId) == address(this) ||
-                token.isApprovedForAll(msg.sender, address(this)),
+            token.getApproved(tokenId)
+                == address(this)
+                || token.isApprovedForAll(msg.sender, address(this)),
             "Account offering must have approved transfer"
         );
 

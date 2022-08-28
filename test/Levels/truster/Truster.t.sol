@@ -8,7 +8,7 @@ import {DamnValuableToken} from "../../../src/Contracts/DamnValuableToken.sol";
 import {TrusterLenderPool} from "../../../src/Contracts/truster/TrusterLenderPool.sol";
 
 contract Truster is Test {
-    uint256 internal constant TOKENS_IN_POOL = 1_000_000e18;
+    uint256 internal constant TOKENS_IN_POOL = 1000000e18;
 
     Utilities internal utils;
     TrusterLenderPool internal trusterLenderPool;
@@ -16,7 +16,9 @@ contract Truster is Test {
     address payable internal attacker;
 
     function setUp() public {
-        /** SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE */
+        /**
+         * SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE
+         */
         utils = new Utilities();
         address payable[] memory users = utils.createUsers(1);
         attacker = users[0];
@@ -36,11 +38,15 @@ contract Truster is Test {
     }
 
     function testExploit() public {
-        /** EXPLOIT START **/
+        /**
+         * EXPLOIT START *
+         */
         vm.prank(attacker);
         Exploiter exploiter = new Exploiter(trusterLenderPool, dvt, attacker);
 
-        /** EXPLOIT END **/
+        /**
+         * EXPLOIT END *
+         */
         validation();
     }
 

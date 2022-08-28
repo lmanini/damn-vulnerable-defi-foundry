@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.12;
 
-import {ReentrancyGuard} from "openzeppelin-contracts/security/ReentrancyGuard.sol";
+import {ReentrancyGuard} from
+    "openzeppelin-contracts/security/ReentrancyGuard.sol";
 import {Address} from "openzeppelin-contracts/utils/Address.sol";
 import {DamnValuableToken} from "../DamnValuableToken.sol";
 
@@ -53,12 +54,12 @@ contract PuppetPool is ReentrancyGuard {
         view
         returns (uint256)
     {
-        return (amount * _computeOraclePrice() * 2) / 10**18;
+        return (amount * _computeOraclePrice() * 2) / 10 ** 18;
     }
 
     function _computeOraclePrice() private view returns (uint256) {
         // calculates the price of the token in wei according to Uniswap pair
-        return (uniswapPair.balance * (10**18)) / token.balanceOf(uniswapPair);
+        return (uniswapPair.balance * (10 ** 18)) / token.balanceOf(uniswapPair);
     }
 
     /**

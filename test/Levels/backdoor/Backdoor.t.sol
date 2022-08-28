@@ -5,7 +5,8 @@ import {Utilities} from "../../utils/Utilities.sol";
 import "forge-std/Test.sol";
 
 import {DamnValuableToken} from "../../../src/Contracts/DamnValuableToken.sol";
-import {WalletRegistry} from "../../../src/Contracts/backdoor/WalletRegistry.sol";
+import {WalletRegistry} from
+    "../../../src/Contracts/backdoor/WalletRegistry.sol";
 import {GnosisSafe} from "gnosis/GnosisSafe.sol";
 import {GnosisSafeProxyFactory} from "gnosis/proxies/GnosisSafeProxyFactory.sol";
 
@@ -26,7 +27,9 @@ contract Backdoor is Test {
     address internal david;
 
     function setUp() public {
-        /** SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE */
+        /**
+         * SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE
+         */
 
         utils = new Utilities();
         users = utils.createUsers(NUM_USERS);
@@ -71,14 +74,20 @@ contract Backdoor is Test {
     }
 
     function testExploit() public {
-        /** EXPLOIT START **/
+        /**
+         * EXPLOIT START *
+         */
 
-        /** EXPLOIT END **/
+        /**
+         * EXPLOIT END *
+         */
         validation();
     }
 
     function validation() internal {
-        /** SUCCESS CONDITIONS */
+        /**
+         * SUCCESS CONDITIONS
+         */
         for (uint256 i = 0; i < NUM_USERS; i++) {
             address wallet = walletRegistry.wallets(users[i]);
 

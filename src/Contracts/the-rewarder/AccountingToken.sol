@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.12;
 
-import {ERC20Snapshot, ERC20} from "openzeppelin-contracts/token/ERC20/extensions/ERC20Snapshot.sol";
+import {
+    ERC20Snapshot,
+    ERC20
+} from "openzeppelin-contracts/token/ERC20/extensions/ERC20Snapshot.sol";
 import {AccessControl} from "openzeppelin-contracts/access/AccessControl.sol";
 
 /**
@@ -41,20 +44,12 @@ contract AccountingToken is ERC20Snapshot, AccessControl {
     }
 
     // Do not need transfer of this token
-    function _transfer(
-        address,
-        address,
-        uint256
-    ) internal pure override {
+    function _transfer(address, address, uint256) internal pure override {
         revert NotImplemented();
     }
 
     // Do not need allowance of this token
-    function _approve(
-        address,
-        address,
-        uint256
-    ) internal pure override {
+    function _approve(address, address, uint256) internal pure override {
         revert NotImplemented();
     }
 }

@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.12;
 
-import {ReentrancyGuard} from "openzeppelin-contracts/security/ReentrancyGuard.sol";
-import {ERC20Snapshot} from "openzeppelin-contracts/token/ERC20/extensions/ERC20Snapshot.sol";
+import {ReentrancyGuard} from
+    "openzeppelin-contracts/security/ReentrancyGuard.sol";
+import {ERC20Snapshot} from
+    "openzeppelin-contracts/token/ERC20/extensions/ERC20Snapshot.sol";
 import {Address} from "openzeppelin-contracts/utils/Address.sol";
 import {SimpleGovernance} from "./SimpleGovernance.sol";
 
@@ -42,9 +44,7 @@ contract SelfiePool is ReentrancyGuard {
         if (!msg.sender.isContract()) revert BorrowerMustBeAContract();
         msg.sender.functionCall(
             abi.encodeWithSignature(
-                "receiveTokens(address,uint256)",
-                address(token),
-                borrowAmount
+                "receiveTokens(address,uint256)", address(token), borrowAmount
             )
         );
 

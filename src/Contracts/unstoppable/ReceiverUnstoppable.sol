@@ -11,6 +11,7 @@ import {SafeERC20} from "openzeppelin-contracts/token/ERC20/utils/SafeERC20.sol"
  */
 contract ReceiverUnstoppable {
     using SafeERC20 for IERC20;
+
     UnstoppableLender private immutable pool;
     address private immutable owner;
 

@@ -2,9 +2,11 @@
 pragma solidity 0.8.12;
 
 import {Address} from "openzeppelin-contracts/utils/Address.sol";
-import {ReentrancyGuard} from "openzeppelin-contracts/security/ReentrancyGuard.sol";
+import {ReentrancyGuard} from
+    "openzeppelin-contracts/security/ReentrancyGuard.sol";
 import {IERC721} from "openzeppelin-contracts/token/ERC721/IERC721.sol";
-import {IERC721Receiver} from "openzeppelin-contracts/token/ERC721/IERC721Receiver.sol";
+import {IERC721Receiver} from
+    "openzeppelin-contracts/token/ERC721/IERC721Receiver.sol";
 
 /**
  * @title FreeRiderBuyer
@@ -12,6 +14,7 @@ import {IERC721Receiver} from "openzeppelin-contracts/token/ERC721/IERC721Receiv
  */
 contract FreeRiderBuyer is ReentrancyGuard, IERC721Receiver {
     using Address for address payable;
+
     address private immutable partner;
     IERC721 private immutable nft;
     uint256 private constant JOB_PAYOUT = 45 ether;
@@ -25,12 +28,12 @@ contract FreeRiderBuyer is ReentrancyGuard, IERC721Receiver {
     }
 
     // Read https://eips.ethereum.org/EIPS/eip-721 for more info on this function
-    function onERC721Received(
-        address,
-        address,
-        uint256 _tokenId,
-        bytes memory
-    ) external override nonReentrant returns (bytes4) {
+    function onERC721Received(address, address, uint256 _tokenId, bytes memory)
+        external
+        override
+        nonReentrant
+        returns (bytes4)
+    {
         require(msg.sender == address(nft));
         require(tx.origin == partner);
         require(_tokenId >= 0 && _tokenId <= 5);

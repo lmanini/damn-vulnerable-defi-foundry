@@ -27,11 +27,9 @@ interface IUniswapV2Pair {
 
     function transfer(address to, uint256 value) external returns (bool);
 
-    function transferFrom(
-        address from,
-        address to,
-        uint256 value
-    ) external returns (bool);
+    function transferFrom(address from, address to, uint256 value)
+        external
+        returns (bool);
 
     function DOMAIN_SEPARATOR() external view returns (bytes32);
 
@@ -47,7 +45,8 @@ interface IUniswapV2Pair {
         uint8 v,
         bytes32 r,
         bytes32 s
-    ) external;
+    )
+        external;
 
     event Mint(address indexed sender, uint256 amount0, uint256 amount1);
     event Burn(
@@ -77,11 +76,7 @@ interface IUniswapV2Pair {
     function getReserves()
         external
         view
-        returns (
-            uint112 reserve0,
-            uint112 reserve1,
-            uint32 blockTimestampLast
-        );
+        returns (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast);
 
     function price0CumulativeLast() external view returns (uint256);
 
@@ -100,7 +95,8 @@ interface IUniswapV2Pair {
         uint256 amount1Out,
         address to,
         bytes calldata data
-    ) external;
+    )
+        external;
 
     function skim(address to) external;
 

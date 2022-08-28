@@ -3,7 +3,8 @@ pragma solidity 0.8.12;
 
 import {IERC20} from "openzeppelin-contracts/token/ERC20/IERC20.sol";
 import {Address} from "openzeppelin-contracts/utils/Address.sol";
-import {ReentrancyGuard} from "openzeppelin-contracts/security/ReentrancyGuard.sol";
+import {ReentrancyGuard} from
+    "openzeppelin-contracts/security/ReentrancyGuard.sol";
 
 /**
  * @title TrusterLenderPool
@@ -26,7 +27,10 @@ contract TrusterLenderPool is ReentrancyGuard {
         address borrower,
         address target,
         bytes calldata data
-    ) external nonReentrant {
+    )
+        external
+        nonReentrant
+    {
         uint256 balanceBefore = damnValuableToken.balanceOf(address(this));
         if (balanceBefore < borrowAmount) revert NotEnoughTokensInPool();
 

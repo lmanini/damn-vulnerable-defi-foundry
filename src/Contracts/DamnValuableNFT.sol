@@ -2,8 +2,7 @@
 pragma solidity 0.8.12;
 
 import {ERC721} from "openzeppelin-contracts/token/ERC721/ERC721.sol";
-import {ERC721Burnable} from
-    "openzeppelin-contracts/token/ERC721/extensions/ERC721Burnable.sol";
+import {ERC721Burnable} from "openzeppelin-contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import {AccessControl} from "openzeppelin-contracts/access/AccessControl.sol";
 import {Counters} from "openzeppelin-contracts/utils/Counters.sol";
 
@@ -23,23 +22,14 @@ contract DamnValuableNFT is ERC721, ERC721Burnable, AccessControl {
         _setupRole(MINTER_ROLE, msg.sender);
     }
 
-    function safeMint(address to)
-        public
-        onlyRole(MINTER_ROLE)
-        returns (uint256)
-    {
+    function safeMint(address to) public onlyRole(MINTER_ROLE) returns (uint256) {
         uint256 tokenId = _tokenIdCounter.current();
         _safeMint(to, tokenId);
         _tokenIdCounter.increment();
         return tokenId;
     }
 
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        override (ERC721, AccessControl)
-        returns (bool)
-    {
+    function supportsInterface(bytes4 interfaceId) public view override (ERC721, AccessControl) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
 }

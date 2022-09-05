@@ -21,12 +21,15 @@ contract FlashLoanReceiver {
 
     // Function called by the pool during flash loan
     function receiveEther(uint256 fee) public payable {
-        if (msg.sender != pool) revert SenderMustBePool();
+        if (msg.sender != pool) {
+            revert SenderMustBePool();
+        }
 
         uint256 amountToBeRepaid = msg.value + fee;
 
-        if (address(this).balance < amountToBeRepaid) revert
-            CannotBorrowThatMuch();
+        if (address(this).balance < amountToBeRepaid) {
+            revert CannotBorrowThatMuch();
+        }
 
         _executeActionDuringFlashLoan();
 

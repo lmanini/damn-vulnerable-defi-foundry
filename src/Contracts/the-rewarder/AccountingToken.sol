@@ -1,17 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.12;
 
-import {
-    ERC20Snapshot,
-    ERC20
-} from "openzeppelin-contracts/token/ERC20/extensions/ERC20Snapshot.sol";
+import {ERC20Snapshot, ERC20} from "openzeppelin-contracts/token/ERC20/extensions/ERC20Snapshot.sol";
 import {AccessControl} from "openzeppelin-contracts/access/AccessControl.sol";
 
 /**
  * @title AccountingToken
  * @author Damn Vulnerable DeFi (https://damnvulnerabledefi.xyz)
  * @notice A limited pseudo-ERC20 token to keep track of deposits and withdrawals
- *         with snapshotting capabilities
+ * with snapshotting capabilities
  */
 contract AccountingToken is ERC20Snapshot, AccessControl {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
@@ -29,17 +26,23 @@ contract AccountingToken is ERC20Snapshot, AccessControl {
     }
 
     function mint(address to, uint256 amount) external {
-        if (!hasRole(MINTER_ROLE, msg.sender)) revert Forbidden();
+        if (!hasRole(MINTER_ROLE, msg.sender)) {
+            revert Forbidden();
+        }
         _mint(to, amount);
     }
 
     function burn(address from, uint256 amount) external {
-        if (!hasRole(BURNER_ROLE, msg.sender)) revert Forbidden();
+        if (!hasRole(BURNER_ROLE, msg.sender)) {
+            revert Forbidden();
+        }
         _burn(from, amount);
     }
 
     function snapshot() external returns (uint256) {
-        if (!hasRole(SNAPSHOT_ROLE, msg.sender)) revert Forbidden();
+        if (!hasRole(SNAPSHOT_ROLE, msg.sender)) {
+            revert Forbidden();
+        }
         return _snapshot();
     }
 

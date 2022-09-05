@@ -8,8 +8,7 @@ import {DamnValuableToken} from "../../../src/Contracts/DamnValuableToken.sol";
 
 contract JuniorMiners is Test {
     uint256 internal constant DEPOSIT_TOKEN_AMOUNT = 2000000e18;
-    address internal constant DEPOSIT_ADDRESS =
-        0x79658d35aB5c38B6b988C23D02e0410A380B8D5c;
+    address internal constant DEPOSIT_ADDRESS = 0x79658d35aB5c38B6b988C23D02e0410A380B8D5c;
 
     Utilities internal utils;
     DamnValuableToken internal dvt;

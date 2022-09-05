@@ -10,7 +10,7 @@ import {GnosisSafeProxy} from "gnosis/proxies/GnosisSafeProxy.sol";
 /**
  * @title WalletRegistry
  * @notice A registry for Gnosis Safe wallets.
-           When known beneficiaries deploy and register their wallets, the registry sends some Damn Valuable Tokens to the wallet.
+ * When known beneficiaries deploy and register their wallets, the registry sends some Damn Valuable Tokens to the wallet.
  * @dev The registry has embedded verifications to ensure only legitimate Gnosis Safe wallets are stored.
  * @author Damn Vulnerable DeFi (https://damnvulnerabledefi.xyz)
  */
@@ -43,9 +43,12 @@ contract WalletRegistry is IProxyCreationCallback, Ownable {
         address tokenAddress,
         address[] memory initialBeneficiaries
     ) {
-        if (masterCopyAddress == address(0)) revert AddressZeroIsNotAllowed();
-        if (walletFactoryAddress == address(0))
+        if (masterCopyAddress == address(0)) {
             revert AddressZeroIsNotAllowed();
+        }
+        if (walletFactoryAddress == address(0)) {
+            revert AddressZeroIsNotAllowed();
+        }
 
         masterCopy = masterCopyAddress;
         walletFactory = walletFactoryAddress;
@@ -65,41 +68,48 @@ contract WalletRegistry is IProxyCreationCallback, Ownable {
     }
 
     /**
-     @notice Function executed when user creates a Gnosis Safe wallet via GnosisSafeProxyFactory::createProxyWithCallback
-             setting the registry's address as the callback.
+     * @notice Function executed when user creates a Gnosis Safe wallet via GnosisSafeProxyFactory::createProxyWithCallback
+     * setting the registry's address as the callback.
      */
-    function proxyCreated(
-        GnosisSafeProxy proxy,
-        address singleton,
-        bytes calldata initializer,
-        uint256
-    ) external override {
+    function proxyCreated(GnosisSafeProxy proxy, address singleton, bytes calldata initializer, uint256)
+        external
+        override
+    {
         // Make sure we have enough DVT to pay
-        if (token.balanceOf(address(this)) < TOKEN_PAYMENT)
+        if (token.balanceOf(address(this)) < TOKEN_PAYMENT) {
             revert NotEnoughFundsToPay();
+        }
 
         address payable walletAddress = payable(proxy);
 
         // Ensure correct factory and master copy
-        if (msg.sender != walletFactory) revert CallerMustBeFactory();
-        if (singleton != masterCopy) revert FakeMasterCopyUsed();
+        if (msg.sender != walletFactory) {
+            revert CallerMustBeFactory();
+        }
+        if (singleton != masterCopy) {
+            revert FakeMasterCopyUsed();
+        }
 
         // Ensure initial calldata was a call to `GnosisSafe::setup`
-        if (bytes4(initializer[:4]) != GnosisSafe.setup.selector)
+        if (bytes4(initializer[:4]) != GnosisSafe.setup.selector) {
             revert WrongInitialization();
+        }
 
         // Ensure wallet initialization is the expected
-        if (GnosisSafe(walletAddress).getThreshold() != MAX_THRESHOLD)
+        if (GnosisSafe(walletAddress).getThreshold() != MAX_THRESHOLD) {
             revert InvalidThreshold();
+        }
 
-        if (GnosisSafe(walletAddress).getOwners().length != MAX_OWNERS)
+        if (GnosisSafe(walletAddress).getOwners().length != MAX_OWNERS) {
             revert InvalidNumberOfOwners();
+        }
 
         // Ensure the owner is a registered beneficiary
         address walletOwner = GnosisSafe(walletAddress).getOwners()[0];
 
-        if (!beneficiaries[walletOwner])
+        if (!beneficiaries[walletOwner]) {
             revert OwnerIsNotRegisteredAsBeneficiary();
+        }
 
         // Remove owner as beneficiary
         _removeBeneficiary(walletOwner);

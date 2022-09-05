@@ -34,24 +34,21 @@ contract SimpleGovernance {
     error CannotExecuteThisAction();
 
     constructor(address governanceTokenAddress) {
-        if (governanceTokenAddress == address(0)) revert
-            GovernanceTokenCannotBeZeroAddress();
+        if (governanceTokenAddress == address(0)) {
+            revert GovernanceTokenCannotBeZeroAddress();
+        }
 
         governanceToken = DamnValuableTokenSnapshot(governanceTokenAddress);
         actionCounter = 1;
     }
 
-    function queueAction(
-        address receiver,
-        bytes calldata data,
-        uint256 weiAmount
-    )
-        external
-        returns (uint256)
-    {
-        if (!_hasEnoughVotes(msg.sender)) revert NotEnoughVotesToPropose(); // must be -> dvt.balanceOf(msg.sender) > 1_000_000e18
-        if (receiver == address(this)) revert
-            CannotQueueActionsThatAffectGovernance();
+    function queueAction(address receiver, bytes calldata data, uint256 weiAmount) external returns (uint256) {
+        if (!_hasEnoughVotes(msg.sender)) {
+            revert NotEnoughVotesToPropose();
+        } // must be -> dvt.balanceOf(msg.sender) > 1_000_000e18
+        if (receiver == address(this)) {
+            revert CannotQueueActionsThatAffectGovernance();
+        }
 
         uint256 actionId = actionCounter;
 
@@ -68,14 +65,14 @@ contract SimpleGovernance {
     }
 
     function executeAction(uint256 actionId) external payable {
-        if (!_canBeExecuted(actionId)) revert CannotExecuteThisAction(); // action must not have been executed and block.timestamp >= 2 days + proposedAt
+        if (!_canBeExecuted(actionId)) {
+            revert CannotExecuteThisAction();
+        } // action must not have been executed and block.timestamp >= 2 days + proposedAt
 
         GovernanceAction storage actionToExecute = actions[actionId];
         actionToExecute.executedAt = block.timestamp;
 
-        actionToExecute.receiver.functionCallWithValue(
-            actionToExecute.data, actionToExecute.weiAmount
-        );
+        actionToExecute.receiver.functionCallWithValue(actionToExecute.data, actionToExecute.weiAmount);
 
         emit ActionExecuted(actionId, msg.sender);
     }
@@ -92,17 +89,13 @@ contract SimpleGovernance {
     function _canBeExecuted(uint256 actionId) private view returns (bool) {
         GovernanceAction memory actionToExecute = actions[actionId];
         return (
-            actionToExecute.executedAt
-                == 0
-                &&
-                (block.timestamp - actionToExecute.proposedAt >= ACTION_DELAY_IN_SECONDS)
+            actionToExecute.executedAt == 0 && (block.timestamp - actionToExecute.proposedAt >= ACTION_DELAY_IN_SECONDS)
         );
     }
 
     function _hasEnoughVotes(address account) private view returns (bool) {
         uint256 balance = governanceToken.getBalanceAtLastSnapshot(account);
-        uint256 halfTotalSupply =
-            governanceToken.getTotalSupplyAtLastSnapshot() / 2;
+        uint256 halfTotalSupply = governanceToken.getTotalSupplyAtLastSnapshot() / 2;
         return balance > halfTotalSupply;
     }
 }

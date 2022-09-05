@@ -47,20 +47,23 @@ contract TheRewarderPool {
      * @notice sender must have approved `amountToDeposit` liquidity tokens in advance
      */
     function deposit(uint256 amountToDeposit) external {
-        if (amountToDeposit == 0) revert MustDepositTokens();
+        if (amountToDeposit == 0) {
+            revert MustDepositTokens();
+        }
 
         accToken.mint(msg.sender, amountToDeposit);
         distributeRewards();
 
-        if (
-            !liquidityToken.transferFrom(msg.sender, address(this), amountToDeposit)
-        ) revert TransferFail();
+        if (!liquidityToken.transferFrom(msg.sender, address(this), amountToDeposit)) {
+            revert TransferFail();
+        }
     }
 
     function withdraw(uint256 amountToWithdraw) external {
         accToken.burn(msg.sender, amountToWithdraw);
-        if (!liquidityToken.transfer(msg.sender, amountToWithdraw)) revert
-            TransferFail();
+        if (!liquidityToken.transfer(msg.sender, amountToWithdraw)) {
+            revert TransferFail();
+        }
     }
 
     function distributeRewards() public returns (uint256) {
@@ -74,8 +77,7 @@ contract TheRewarderPool {
             lastSnapshotIdForRewards
         );
         uint256 amountDeposited = accToken.balanceOfAt( //100 for each user
-            msg.sender,
-            lastSnapshotIdForRewards
+            msg.sender, lastSnapshotIdForRewards
         );
 
         if (amountDeposited > 0 && totalDeposits > 0) {
@@ -98,17 +100,12 @@ contract TheRewarderPool {
 
     function _hasRetrievedReward(address account) private view returns (bool) {
         return (
-            lastRewardTimestamps[account]
-                >= lastRecordedSnapshotTimestamp
-                && lastRewardTimestamps[account]
-                <= lastRecordedSnapshotTimestamp
-                + REWARDS_ROUND_MIN_DURATION
+            lastRewardTimestamps[account] >= lastRecordedSnapshotTimestamp
+                && lastRewardTimestamps[account] <= lastRecordedSnapshotTimestamp + REWARDS_ROUND_MIN_DURATION
         );
     }
 
     function isNewRewardsRound() public view returns (bool) {
-        return block.timestamp
-            >= lastRecordedSnapshotTimestamp
-            + REWARDS_ROUND_MIN_DURATION;
+        return block.timestamp >= lastRecordedSnapshotTimestamp + REWARDS_ROUND_MIN_DURATION;
     }
 }

@@ -3,8 +3,7 @@ pragma solidity 0.8.12;
 
 import {IERC20} from "openzeppelin-contracts/token/ERC20/IERC20.sol";
 import {Address} from "openzeppelin-contracts/utils/Address.sol";
-import {ReentrancyGuard} from
-    "openzeppelin-contracts/security/ReentrancyGuard.sol";
+import {ReentrancyGuard} from "openzeppelin-contracts/security/ReentrancyGuard.sol";
 
 /**
  * @title TrusterLenderPool
@@ -22,22 +21,21 @@ contract TrusterLenderPool is ReentrancyGuard {
         damnValuableToken = IERC20(tokenAddress);
     }
 
-    function flashLoan(
-        uint256 borrowAmount,
-        address borrower,
-        address target,
-        bytes calldata data
-    )
+    function flashLoan(uint256 borrowAmount, address borrower, address target, bytes calldata data)
         external
         nonReentrant
     {
         uint256 balanceBefore = damnValuableToken.balanceOf(address(this));
-        if (balanceBefore < borrowAmount) revert NotEnoughTokensInPool();
+        if (balanceBefore < borrowAmount) {
+            revert NotEnoughTokensInPool();
+        }
 
         damnValuableToken.transfer(borrower, borrowAmount);
         target.functionCall(data);
 
         uint256 balanceAfter = damnValuableToken.balanceOf(address(this));
-        if (balanceAfter < balanceBefore) revert FlashLoanHasNotBeenPaidBack();
+        if (balanceAfter < balanceBefore) {
+            revert FlashLoanHasNotBeenPaidBack();
+        }
     }
 }

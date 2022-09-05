@@ -20,7 +20,9 @@ contract RewardToken is ERC20, AccessControl {
     }
 
     function mint(address to, uint256 amount) external {
-        if (!hasRole(MINTER_ROLE, msg.sender)) revert Forbidden();
+        if (!hasRole(MINTER_ROLE, msg.sender)) {
+            revert Forbidden();
+        }
         _mint(to, amount);
     }
 }

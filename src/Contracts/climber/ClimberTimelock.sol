@@ -68,11 +68,7 @@ contract ClimberTimelock is AccessControl {
         uint256[] calldata values,
         bytes[] calldata dataElements,
         bytes32 salt
-    )
-        public
-        pure
-        returns (bytes32)
-    {
+    ) public pure returns (bytes32) {
         return keccak256(abi.encode(targets, values, dataElements, salt));
     }
 
@@ -81,10 +77,7 @@ contract ClimberTimelock is AccessControl {
         uint256[] calldata values,
         bytes[] calldata dataElements,
         bytes32 salt
-    )
-        external
-        onlyRole(PROPOSER_ROLE)
-    {
+    ) external onlyRole(PROPOSER_ROLE) {
         require(targets.length > 0 && targets.length < 256);
         require(targets.length == values.length);
         require(targets.length == dataElements.length);
@@ -101,16 +94,13 @@ contract ClimberTimelock is AccessControl {
 
     /**
      * Anyone can execute what has been scheduled via `schedule`
-     */
+    */
     function execute(
         address[] calldata targets,
         uint256[] calldata values,
         bytes[] calldata dataElements,
         bytes32 salt
-    )
-        external
-        payable
-    {
+    ) external payable {
         require(targets.length > 0, "Must provide at least one target");
         require(targets.length == values.length);
         require(targets.length == dataElements.length);

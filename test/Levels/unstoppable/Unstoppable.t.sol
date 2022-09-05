@@ -5,10 +5,8 @@ import {Utilities} from "../../utils/Utilities.sol";
 import "forge-std/Test.sol";
 
 import {DamnValuableToken} from "../../../src/Contracts/DamnValuableToken.sol";
-import {UnstoppableLender} from
-    "../../../src/Contracts/unstoppable/UnstoppableLender.sol";
-import {ReceiverUnstoppable} from
-    "../../../src/Contracts/unstoppable/ReceiverUnstoppable.sol";
+import {UnstoppableLender} from "../../../src/Contracts/unstoppable/UnstoppableLender.sol";
+import {ReceiverUnstoppable} from "../../../src/Contracts/unstoppable/ReceiverUnstoppable.sol";
 
 contract Unstoppable is Test {
     uint256 internal constant TOKENS_IN_POOL = 1000000e18;
